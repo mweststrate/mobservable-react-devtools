@@ -11,9 +11,6 @@ import Graph from './Graph';
 const LS_UPDATES_KEY = 'mobservable-react-devtool__updatesEnabled';
 const LS_LOG_KEY = 'mobservable-react-devtool__logEnabled';
 
-/* Start magic */
-mobservableReact.trackComponents();
-
 export default class DevTool extends Component {
 
   static propTypes = {
@@ -33,6 +30,9 @@ export default class DevTool extends Component {
 
   componentWillMount() {
     const { hightlightTimeout } = this.props;
+
+    /* Start magic */
+    mobservableReact.trackComponents();
 
     this.renderingMonitor = new RenderingMonitor({
       hightlightTimeout,
