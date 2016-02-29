@@ -25,7 +25,7 @@ export default class Panel extends Component {
 
     return (
       <div>
-        <div className={css.panel}>
+        <div className={css.panel} style={this.props.style}>
           {/*
            <a
            href="https://mobxjs.github.io/mobx/"

@@ -27,6 +27,7 @@ class MyApp extends React.Component {
 
 Supported props:
 * `hightlightTimeout` — number, default: 1500.
+* `style` — object, override default styles (useful for re-positioning the control panel)
 
 
 From there on, after each rendering a reactive components logs the following three metrics:
