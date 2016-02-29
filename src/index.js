@@ -15,6 +15,7 @@ export default class DevTool extends Component {
 
   static propTypes = {
     hightlightTimeout: PropTypes.number,
+    style: PropTypes.object,
   };
 
   static defaultProps = {
@@ -156,6 +157,7 @@ export default class DevTool extends Component {
     return (
       <div ref={el => this.containerEl = el}>
         <Panel
+          style={this.props.style}
           updatesEnabled={updatesEnabled}
           graphEnabled={graphEnabled}
           logEnabled={logEnabled}
