@@ -1,0 +1,252 @@
+Index: src/chrome/window.html
+===================================================================
+--- src/chrome/window.html	(revision )
++++ src/chrome/window.html	(revision )
+@@ -1,33 +0,0 @@
+-<!doctype html>
+-<html style="display: flex">
+-    <head>
+-        <meta charset="utf8">
+-        <style>
+-            html {
+-                display: flex;
+-                position: fixed;
+-                top: 0;
+-                left: 0;
+-                right: 0;
+-                bottom: 0;
+-            }
+-            body {
+-                margin: 0;
+-                padding: 0;
+-                flex: 1;
+-                display: flex;
+-                width: 100%;
+-            }
+-            #container {
+-                display: flex;
+-                flex: 1;
+-                width: 100%;
+-            }
+-        </style>
+-    </head>
+-    <body>
+-        <!-- main react mount point -->
+-        <div id="container">Unable to find React on the page.</div>
+-        <script src="./build/panel.js"></script>
+-    </body>
+-</html>
+Index: src/chrome/src/panel.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/chrome/src/panel.js	(revision )
++++ src/chrome/src/panel.js	(revision )
+@@ -10,23 +10,23 @@
+ 
+ var node = document.getElementById('container');
+ 
+-chrome.runtime.getBackgroundPage(({ contentTabId }) => {
+-  debugger;
++// chrome.runtime.getBackgroundPage(({ contentTabId }) => {
++//   debugger;
+   const config = {
+     reload: () => setTimeout(() => {
+       ReactDOM.unmountComponentAtNode(node);
+       node.innerHTML = '';
+       ReactDOM.render(<App {...config}><RichPanel /></App>, node);
+     }, 100),
+-    reloadSubscribe: reloadFn => {
+-      const listener = function(detail) {
+-        if (detail.tabId === contentTabId) {
+-          reloadFn
+-        }
+-      };
+-      chrome.webNavigation.onBeforeNavigate.addListener(listener);
+-      return () => chrome.webNavigation.onBeforeNavigate.removeListener(reloadFn);
+-    },
++    // reloadSubscribe: reloadFn => {
++    //   const listener = function(detail) {
++    //     if (detail.tabId === contentTabId) {
++    //       reloadFn
++    //     }
++    //   };
++    //   chrome.webNavigation.onBeforeNavigate.addListener(listener);
++    //   return () => chrome.webNavigation.onBeforeNavigate.removeListener(reloadFn);
++    // },
+     inject: done => {
+       inject(chrome.runtime.getURL('build/backend.js'), () => {
+         let disconnected = false;
+@@ -58,4 +58,4 @@
+ 
+   ReactDOM.render(<App {...config}><RichPanel /></App>, node);
+ 
+-});
++// });
+Index: src/backend/agent.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/backend/agent.js	(revision )
++++ src/backend/agent.js	(revision )
+@@ -75,7 +75,6 @@
+   }
+ 
+   _setupMobxReact(mobxReact, mobxrid) {
+-    mobxReact.trackComponents();
+     // TODO: renderReporter should have `off` method
+     mobxReact.renderReporter.on(report => this._delegate.handleRenderingReport(report))
+   }
+Index: src/backend/Bridge.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/backend/Bridge.js	(revision )
++++ src/backend/Bridge.js	(revision )
+@@ -44,6 +44,7 @@
+   }
+ 
+   _handleMessage(payload) {
++    console.log('received:', payload)
+     const fns = this._listeners[payload.evt];
+     const data = deserialize(payload.data);
+     if (fns) {
+Index: src/index.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/index.js	(revision )
++++ src/index.js	(revision )
+@@ -22,58 +22,58 @@
+ 
+ 
+ 
+-import installGlobalHook from './backend/installGlobalHook';
+-
+-import React from 'react';
+-import ReactDOM from 'react-dom';
+-import Bridge from './backend/Bridge';
+-import Agent from './backend/agent';
+-
+-import App from './components/App';
+-import RichPanel from './components/RichPanel';
+-
+-
+-installGlobalHook(window);
+-const hook = __MOBX_DEVTOOLS_GLOBAL_HOOK__;
+-const backendListeners = [];
+-const frontendListeners = [];
+-var backendWall = {
+-  listen(fn) {
+-    backendListeners.push(fn);
+-  },
+-  send(data) {
+-    setTimeout(() => frontendListeners.forEach(fn => fn(data)), 0);
+-  },
+-};
+-
+-const agent = new Agent(new Bridge(backendWall), hook);
+-
+-agent.onceShutdown(() => {
+-  backendListeners.splice(0);
+-});
+-
+-const portal = document.createElement('div');
+-document.documentElement.appendChild(portal);
+-
+-
+-const config = {
+-  reload: () => {},
+-  reloadSubscribe: () => {},
+-  inject: done => {
+-    const wall = {
+-      listen(fn) {
+-        frontendListeners.push(fn);
+-      },
+-      send(data) {
+-        setTimeout(() => backendListeners.forEach(fn => fn(data)), 0);
+-      },
+-    };
+-
+-    done(wall, () => {
+-      frontendListeners.splice(0);
+-    });
+-  }
+-};
+-
+-ReactDOM.render(<App {...config}><RichPanel /></App>, portal);
++// import installGlobalHook from './backend/installGlobalHook';
++//
++// import React from 'react';
++// import ReactDOM from 'react-dom';
++// import Bridge from './backend/Bridge';
++// import Agent from './backend/agent';
++//
++// import App from './components/App';
++// import RichPanel from './components/RichPanel';
++//
++//
++// installGlobalHook(window);
++// const hook = __MOBX_DEVTOOLS_GLOBAL_HOOK__;
++// const backendListeners = [];
++// const frontendListeners = [];
++// var backendWall = {
++//   listen(fn) {
++//     backendListeners.push(fn);
++//   },
++//   send(data) {
++//     setTimeout(() => frontendListeners.forEach(fn => fn(data)), 0);
++//   },
++// };
++//
++// const agent = new Agent(new Bridge(backendWall), hook);
++//
++// agent.onceShutdown(() => {
++//   backendListeners.splice(0);
++// });
++//
++// const portal = document.createElement('div');
++// document.documentElement.appendChild(portal);
++//
++//
++// const config = {
++//   reload: () => {},
++//   reloadSubscribe: () => {},
++//   inject: done => {
++//     const wall = {
++//       listen(fn) {
++//         frontendListeners.push(fn);
++//       },
++//       send(data) {
++//         setTimeout(() => backendListeners.forEach(fn => fn(data)), 0);
++//       },
++//     };
++//
++//     done(wall, () => {
++//       frontendListeners.splice(0);
++//     });
++//   }
++// };
++//
++// ReactDOM.render(<App {...config}><RichPanel /></App>, portal);
+ 
+Index: src/components/Log.js
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- src/components/Log.js	(revision )
++++ src/components/Log.js	(revision )
+@@ -30,7 +30,7 @@
+         </style>
+         <h6>Log: ({log.length})</h6>
+         {log.map(change => (
+-          <div className="mobxdevtool__log__item">
++          <div className="mobxdevtool__log__item" key={Math.random()}>
+             {change.type}
+           </div>
+         ))}

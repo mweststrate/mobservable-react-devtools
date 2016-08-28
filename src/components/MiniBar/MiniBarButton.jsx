@@ -1,12 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import * as styles from './styles';
 
-export default class PanelButton extends Component {
+export default class MiniPanelButton extends Component {
 
   static props = {
     onToggle: PropTypes.bool.isRequired,
     active: PropTypes.bool.isRequired,
-    name: PropTypes.oneOf(['buttonUpdates', 'buttonGraph', 'buttonLog']).isRequired,
+    id: PropTypes.oneOf(['buttonUpdates', 'buttonGraph', 'buttonConsoleLog', 'buttonLog']).isRequired,
+    style: PropTypes.object,
   };
 
   state = {
@@ -17,7 +18,7 @@ export default class PanelButton extends Component {
   handleMouseOut = () => this.setState({ hovered: false });
 
   render() {
-    const { active, id, onToggle } = this.props;
+    const { active, id, onToggle, style } = this.props;
     const { hovered } = this.state;
 
     const additionalStyles = (() => {
@@ -25,14 +26,18 @@ export default class PanelButton extends Component {
         case 'buttonUpdates': return active ? styles.buttonUpdatesActive : styles.buttonUpdates;
         case 'buttonGraph': return active ? styles.buttonGraphActive : styles.buttonGraph;
         case 'buttonLog': return active ? styles.buttonLogActive : styles.buttonLog;
+        case 'buttonConsoleLog': return active ? styles.buttonConsoleLogActive : styles.buttonConsoleLog;
+        case 'buttonClear': return styles.buttonClear;
       }
     })();
 
     const title = (() => {
       switch (id) {
         case 'buttonUpdates': return 'Visualize component re-renders';
-        case 'buttonGraph': return 'Select a component and show it\'s dependency tree';
-        case 'buttonLog': return 'Log all MobX state changes and reactions to the browser console (use F12 to show / hide the console). Use Chrome / Chromium for an optimal experience';
+        case 'buttonGraph': return 'Select a component and show its dependency tree';
+        case 'buttonLog': return 'Log state changes in panel';
+        case 'buttonConsoleLog': return 'Log state changes to the browser console';
+        case 'buttonClear': return 'Clear log';
       }
     })();
 
@@ -41,7 +46,8 @@ export default class PanelButton extends Component {
       styles.button,
       additionalStyles,
       active && styles.button.active,
-      hovered && styles.button.hover
+      hovered && styles.button.hover,
+      style
     );
 
     return (

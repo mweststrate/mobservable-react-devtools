@@ -1,21 +1,24 @@
 import React, { Component, PropTypes } from 'react';
 import ModalContainer from '../ModalContainer';
-import { getGlobalState, setGlobalState, eventEmitter } from '../globalStore';
 import * as styles from './styles.js';
 
 export default class Graph extends Component {
 
+  static contextTypes = {
+    store: React.PropTypes.object.isRequired,
+  };
+
   componentDidMount() {
-    eventEmitter.on('update', this.handleUpdate);
+    this._unsubscribe = this.context.store.subscibeUpdates(() => this.setState({}));
   }
 
   componentWillUnmount() {
-    eventEmitter.removeListener('update', this.handleUpdate)
+    this._unsubscribe();
   }
 
   handleUpdate = () => this.setState({});
 
-  handleClose = () => setGlobalState({ dependencyTree: undefined });
+  handleClose = () => this.context.store.clearDeptree();
 
   renderTreeItem({ name, dependencies }, isLast, isRoot) {
     return (
@@ -35,13 +38,13 @@ export default class Graph extends Component {
   }
 
   render() {
-    const { dependencyTree } = getGlobalState();
+    const { dependencyTree } = this.context.store.state;
     return (
       <ModalContainer onOverlayClick={this.handleClose}>
         {dependencyTree &&
           <div style={styles.graph}>
             <span style={styles.close} onClick={this.handleClose}>×</span>
-            <div style={styles.tree}>
+            <div style={styles.rootThree}>
               {this.renderTreeItem(dependencyTree, /*isLast:*/true, /*isRoot:*/true)}
             </div>
           </div>

@@ -1,0 +1,56 @@
+{
+  "manifest_version": 2,
+  "name": "MobX Developer Tools",
+  "description": "Adds MobX debugging tools to the Chrome Developer Tools.",
+  "version": "0.0.4",
+  "version_name": "alpha-1",
+  "minimum_chrome_version": "43",
+  "icons": {
+    "128": "icons/Icon-128.png",
+    "16": "icons/Icon-16.png",
+    "48": "icons/Icon-48.png"
+  },
+
+  "devtools_page": "panel-loader.html",
+
+  "commands": {
+    "open-devtools-window": {
+      "suggested_key": {
+        "default": "Alt+Shift+M",
+        "mac": "Command+MacCtrl+M"
+      },
+      "description": "DevTools window to left"
+    }
+  },
+
+  "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
+  "web_accessible_resources": [ "main.html", "panel.html", "build/backend.js"],
+
+  "background": {
+    "scripts": [ "build/background.js" ],
+    "persistent": false
+  },
+
+  "permissions": [
+    "contextMenus",
+    "file:///*",
+    "http://*/*",
+    "https://*/*"
+  ],
+
+  "browser_action": {
+    "default_icon": {
+      "16": "icons/toolbar-chrome.png",
+      "32": "icons/toolbar-chrome@2x.png"
+    },
+    "default_title": "Open"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["build/injectGlobalHook.js"],
+      "run_at": "document_start"
+    }
+  ]
+}

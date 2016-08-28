@@ -1,0 +1,9 @@
+[submodule "mobx-react-todomvc"]
+	path = mobx-react-todomvc
+	url = https://github.com/mobxjs/mobx-react-todomvc.git
+[submodule "mobx"]
+	path = mobx
+	url = https://github.com/mobxjs/mobx.git
+[submodule "mobx-react"]
+	path = mobx-react
+	url = https://github.com/mobxjs/mobx-react.git
