@@ -31,7 +31,7 @@ export default class MiniPanelButton extends Component {
     const title = (() => {
       switch (id) {
         case 'buttonUpdates': return 'Visualize component re-renders';
-        case 'buttonGraph': return 'Select a component and show it\'s dependency tree';
+        case 'buttonGraph': return 'Select a component and show its dependency tree';
         case 'buttonLog': return 'Log all MobX state changes and reactions to the browser console (use F12 to show / hide the console). Use Chrome / Chromium for an optimal experience';
       }
     })();
