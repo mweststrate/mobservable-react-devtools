@@ -8,7 +8,10 @@ import RichPanel from '../../components/RichPanel';
 
 var node = document.getElementById('container');
 
+var disconnectListeners = {};
+
 chrome.runtime.getBackgroundPage(({ contentTabId }) => {
+  let onDisconnect;
   const loaderConfig = {
     debugName: 'Window UI',
     reload: () => {
@@ -22,13 +25,8 @@ chrome.runtime.getBackgroundPage(({ contentTabId }) => {
       });
     },
     reloadSubscribe: reloadFn => {
-      const listener = function(tabId, changeInfo) {
-          if (tabId === contentTabId && changeInfo.status === 'loading') {
-            reloadFn()
-          }
-      };
-      chrome.tabs.onUpdated.addListener(listener);
-      return () => chrome.tabs.onUpdated.removeListener(listener);
+      onDisconnect = reloadFn;
+      return () => { onDisconnect = undefined; };
     },
     inject: done => {
       var code = `
@@ -47,6 +45,7 @@ chrome.runtime.getBackgroundPage(({ contentTabId }) => {
 
         port.onDisconnect.addListener(() => {
           disconnected = true;
+          if (onDisconnect) { onDisconnect(); }
         });
 
         const wall = {

@@ -34,16 +34,20 @@ export default class RichPanel extends React.Component {
 
         <div style={{ display: 'flex', flex: '0 0 26px', borderBottom: '1px solid #eee' }}>
 
-          <MiniBarButton
-            id="buttonUpdates"
-            onToggle={() => store.toggleShowingUpdates()}
-            active={store.state.updatesEnabled}
-          />
-          <MiniBarButton
-            id="buttonGraph"
-            onToggle={() => store.togglePickingDeptreeComponent()}
-            active={store.state.graphEnabled}
-          />
+          {store.state.mobxReactFound &&
+            <MiniBarButton
+              id="buttonUpdates"
+              onToggle={() => store.toggleShowingUpdates()}
+              active={store.state.updatesEnabled}
+            />
+          }
+          {store.state.mobxReactFound &&
+            <MiniBarButton
+              id="buttonGraph"
+              onToggle={() => store.togglePickingDeptreeComponent()}
+              active={store.state.graphEnabled}
+            />
+          }
           <MiniBarButton
             id="buttonLog"
             active={store.state.logEnabled}

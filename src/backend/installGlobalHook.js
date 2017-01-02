@@ -12,42 +12,48 @@ export default function installGlobalHook(window) {
     value: ({
       instances: {},
       injectMobx: function(mobx) {
-        mobx = mobx.default || mobx;
-        var mobxid;
-        for (var id in this.instances) {
-          if (this.instances[id] && this.instances[id].mobx === mobx) {
-            mobxid = id;
-            break;
+        var self = this;
+        setTimeout(function() {
+          mobx = mobx.default || mobx;
+          var mobxid;
+          for (var id in self.instances) {
+            if (self.instances[id] && self.instances[id].mobx === mobx) {
+              mobxid = id;
+              break;
+            }
           }
-        }
-        if (!mobxid) {
-          mobxid = Math.random().toString(32).slice(2);
-          this.instances[mobxid] = { mobx };
-          this.emit('mobx', { mobxid, mobx });
-        }
+          if (!mobxid) {
+            mobxid = Math.random().toString(32).slice(2);
+            self.instances[mobxid] = { mobx };
+            self.emit('mobx', { mobxid, mobx });
+          }
+        }, 0);
       },
       injectMobxReact: function(mobxReact, mobx) {
-        mobxReact = mobxReact.default || mobxReact;
-        mobx = mobx.default || mobx;
-        mobxReact.trackComponents();
-        var mobxid;
-        for (var id in this.instances) {
-          if (this.instances[id] && this.instances[id].mobx === mobx
-            && (this.instances[id].mobxReact === undefined || this.instances[id].mobxReact === mobxReact)
-          ) {
-            mobxid = id;
-            break;
+        var self = this;
+        setTimeout(function() {
+          mobxReact = mobxReact.default || mobxReact;
+          mobx = mobx.default || mobx;
+          mobxReact.trackComponents();
+          var mobxid;
+          for (var id in self.instances) {
+            if (self.instances[id] && self.instances[id].mobx === mobx
+              && (self.instances[id].mobxReact === undefined || self.instances[id].mobxReact === mobxReact)
+            ) {
+              mobxid = id;
+              break;
+            }
           }
-        }
-        if (!mobxid) {
-          mobxid = Math.random().toString(32).slice(2);
-          this.instances[mobxid] = { mobx, mobxReact };
-          this.emit('mobx', { mobxid, mobx });
-          this.emit('mobx-react', { mobxid, mobxReact });
-        } else if (this.instances[mobxid].mobxReact !== mobxReact) {
-          this.instances[mobxid].mobxReact = mobxReact;
-          this.emit('mobx-react', { mobxid, mobxReact });
-        }
+          if (!mobxid) {
+            mobxid = Math.random().toString(32).slice(2);
+            self.instances[mobxid] = { mobx, mobxReact };
+            self.emit('mobx', { mobxid, mobx });
+            self.emit('mobx-react', { mobxid, mobxReact });
+          } else if (self.instances[mobxid].mobxReact !== mobxReact) {
+            self.instances[mobxid].mobxReact = mobxReact;
+            self.emit('mobx-react', { mobxid, mobxReact });
+          }
+        }, 0);
       },
 
       findComponentByNode(target) {

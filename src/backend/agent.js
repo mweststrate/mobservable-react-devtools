@@ -3,17 +3,6 @@ import BrowserAgentDelegate from './BrowserAgentDelegate';
 import Store from '../Store';
 import ChangesProcessor from './ChangesProcessor';
 
-// TODO: replace this with detecting circular links
-function fixChangeForStore(change) {
-  return Object.assign({}, change, {
-    object: '<Skipped can be circular link>',
-    target: '<Skipped can be circular link>',
-    added: '<Skipped can be circular link>',
-    removed: '<Skipped can be circular link>',
-    children: change.children.map(fixChangeForStore),
-  })
-}
-
 const LS_UPDATES_KEY = 'mobx-react-devtool__updatesEnabled';
 const LS_CONSOLE_LOG_KEY = 'mobx-react-devtool__clogEnabled';
 const LS_PANEL_LOG_KEY = 'mobx-react-devtool__pLogEnabled';
@@ -40,7 +29,7 @@ export default class Agent {
         }
       }
       if (this.store.state.logEnabled) {
-        this.store.appendLog(fixChangeForStore(change));
+        this.store.appendLog(change);
       }
       if (this.store.state.consoleLogEnabled) {
         this._delegate.consoleLogChange(change)
@@ -54,9 +43,9 @@ export default class Agent {
       const updatesEnabled = window.localStorage.getItem(LS_UPDATES_KEY) === 'YES';
       if (updatesEnabled) this.store.toggleShowingUpdates(updatesEnabled);
       const panelLogEnabled = window.localStorage.getItem(LS_PANEL_LOG_KEY) === 'YES';
-      if (panelLogEnabled) this.store.toggleConsoleLogging(panelLogEnabled);
+      if (panelLogEnabled) this.store.toggleLogging(panelLogEnabled);
       const consoleLogEnabled = window.localStorage.getItem(LS_CONSOLE_LOG_KEY) === 'YES';
-      if (consoleLogEnabled) this.store.toggleLogging(consoleLogEnabled);
+      if (consoleLogEnabled) this.store.toggleConsoleLogging(consoleLogEnabled);
     }
 
      // BrowserDelegate can be replaced by NativeDelegate
@@ -150,6 +139,7 @@ export default class Agent {
   sendStatus() {
     const status = {
       mobxFound: Object.keys(this._hook.instances).length > 0,
+      mobxReactFound: Object.keys(this._hook.instances).find(mobxrid => this._hook.instances[mobxrid].mobxReact) !== undefined,
     };
     this._bridges.forEach(bridge => bridge.send('agent-status', status));
   }

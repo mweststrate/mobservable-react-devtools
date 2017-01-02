@@ -3,18 +3,22 @@ export default class Store {
   static $version = '0.0.0';
 
   static connectToBridge(store, bridge) {
-    console.log('CONNECTED', store.debugName)
-    const outgoingDisposer = store.subscribeActions((data) => {
-      data.debugName = store.debugName;
-      bridge.send('event', data);
-    });
-    const incomingDisposer = bridge.sub('event', (data) => {
-      if (data.action) {
-        store.handleAction(data);
-      }
-    });
+    const disposables = [
+      store.subscribeActions((data) => {
+        data.debugName = store.debugName;
+        bridge.send('event', data);
+      }),
+      bridge.sub('event', (data) => {
+        if (data.action) {
+          store.handleAction(data);
+        }
+      }),
+      bridge.sub('agent-status', (agentStatus) => {
+        store.$setStateKey('mobxReactFound', agentStatus.mobxReactFound);
+      }),
+    ];
 
-    return () => { outgoingDisposer(); incomingDisposer(); }
+    return () => disposables.forEach(fn => fn());
   }
 
   static checkStoreVersionCompatible(store) {
@@ -33,7 +37,7 @@ export default class Store {
     logEnabled: false,
     consoleLogEnabled: false,
     logFilter: undefined,
-    mobxFound: false,
+    mobxReactFound: false,
     log: [],
     dependencyTree: undefined,
     lastUpdate: 0,
@@ -64,11 +68,6 @@ export default class Store {
   }
 
   sendSync() {
-    console.log('Sent sync', this.debugName, {
-      action: 'sync',
-      state: this.state,
-      lastUpdates: this.lastUpdates,
-    });
     this.actionsListeners.forEach(fn => fn({
       action: 'sync',
       state: this.state,

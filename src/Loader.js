@@ -33,7 +33,7 @@ export default class Loader extends React.Component {
 
   state = {
     loading: true,
-    agentStatus: {},
+    mobxFound: false,
   };
 
   componentWillMount() {
@@ -52,7 +52,7 @@ export default class Loader extends React.Component {
 
       this._disposables.push(
         bridge.sub('agent-status', (agentStatus) => {
-          this.setState({ agentStatus });
+          this.setState({ mobxFound: agentStatus.mobxFound });
         })
       );
 
@@ -93,7 +93,7 @@ export default class Loader extends React.Component {
     if (this.state.loading && !this.props.quiet) {
       return !this.props.quiet && <Blocked>Loading...</Blocked>;
     }
-    if (this.state.agentStatus.mobxFound !== true) {
+    if (this.state.mobxFound !== true) {
       return !this.props.quiet && <Blocked>Looking for mobx...</Blocked>;
     }
     return (

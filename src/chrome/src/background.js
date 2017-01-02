@@ -98,12 +98,12 @@ function doublePipe(one, two) {
   console.log(`doublePipe ${one.name} <-> ${two.name} [${one._i} <-> ${two._i}]`);
   one.onMessage.addListener(lOne);
   function lOne(message) {
-    console.log('dv -> rep', message);
+    // console.log('dv -> rep', message);
     two.postMessage(message);
   }
   two.onMessage.addListener(lTwo);
   function lTwo(message) {
-    console.log('rep -> dv', message);
+    // console.log('rep -> dv', message);
     one.postMessage(message);
   }
   function shutdown() {
