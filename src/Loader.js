@@ -2,21 +2,7 @@ var React = require('react');
 import Bridge from './backend/Bridge';
 import Store from './Store';
 import Blocked from './components/Blocked';
-
-class ContextProvider extends React.Component {
-
-  static childContextTypes = {
-    store: React.PropTypes.object.isRequired,
-  };
-
-  getChildContext() {
-    return { store: this.props.store };
-  }
-
-  render() {
-    return this.props.children;
-  }
-}
+import ContextProvider from './ContextProvider';
 
 export default class Loader extends React.Component {
 
