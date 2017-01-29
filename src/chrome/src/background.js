@@ -51,7 +51,7 @@ chrome.browserAction.onClicked.addListener(tab => {
 chrome.runtime.onInstalled.addListener(function(port) {
   chrome.contextMenus.create({
     id: '123',
-    title: 'Open dev',
+    title: 'Open Mobx DevTools',
     contexts: ['all']
   });
 });

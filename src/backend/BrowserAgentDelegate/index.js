@@ -2,6 +2,50 @@ import consoleLogChange from './consoleLogChange';
 
 const renderingInfosRegistry = typeof WeakMap !== 'undefined' ? new WeakMap() : new Map();
 
+const hoverDeptreeNode = document.createElement('div');
+
+
+const showNodeAroundNode = (node, targetNode, outlineColor) => {
+  if (!targetNode || !targetNode.offsetParent || !node) return;
+
+  const offset = {
+    top: targetNode.offsetTop,
+    left: targetNode.offsetLeft,
+    width: targetNode.offsetWidth,
+    height: targetNode.offsetHeight,
+  };
+
+  node.style.position = 'absolute';
+  node.style.top = offset.top + 'px';
+  node.style.left = offset.left + 'px';
+  node.style.width = offset.width + 'px';
+  node.style.height = offset.height + 'px';
+  node.style.boxSizing = 'border-box';
+  node.style.zIndex = '64998';
+  node.style.pointerEvents = 'none';
+  node.style.transition = 'none';
+  node.style.opacity = 1;
+  node.style.zIndex = '64998';
+  node.style.outline = `2px solid  ${outlineColor}`;
+
+  if (!targetNode.offsetParent.contains(node)) {
+    targetNode.offsetParent.appendChild(node);
+  }
+};
+
+const destroyNode = (node, transitionDeleay = 0) => {
+  if (!node || !node.parentNode) return;
+  if (transitionDeleay) {
+    node.style.transition = `opacity ${transitionDeleay}ms ease-in`;
+    node.style.opacity = 0;
+    return setTimeout(() => {
+      node.parentNode.removeChild(node);
+    }, 1500);
+  }
+  node.parentNode.removeChild(node);
+  return undefined;
+};
+
 export default class {
 
   _hoveredDeptreeNode = undefined;
@@ -32,8 +76,7 @@ export default class {
         }
         renderingInfosRegistry.delete(report.node);
       }
-    } else if (report.event === 'render' && report.node) {
-
+    } else if (report.event === 'render' && report.node && report.node.parentNode) {
       let renderingInfo = renderingInfosRegistry.get(report.node);
       if (renderingInfo) {
         clearTimeout(renderingInfo.animationTimeout);
@@ -47,7 +90,6 @@ export default class {
         renderingInfo.hoverNode.appendChild(renderingInfo.textNode);
       }
 
-      const offset = report.node.getBoundingClientRect();
       let outlineColor;
       let backgroundColor;
 
@@ -61,19 +103,6 @@ export default class {
         outlineColor = 'rgba(228, 171, 171, 0.95)';
         backgroundColor = 'rgba(228, 171, 171, 0.95)';
       }
-      renderingInfo.hoverNode.style.position = 'fixed';
-      renderingInfo.hoverNode.style.top = offset.top + 'px';
-      renderingInfo.hoverNode.style.left = offset.left + 'px';
-      renderingInfo.hoverNode.style.width = offset.width + 'px';
-      renderingInfo.hoverNode.style.height = offset.height + 'px';
-      renderingInfo.hoverNode.style.boxSizing = 'border-box';
-      renderingInfo.hoverNode.style.zIndex = '64998';
-      renderingInfo.hoverNode.style.minWidth = '60px';
-      renderingInfo.hoverNode.style.outline = `3px solid  ${outlineColor}`;
-      renderingInfo.hoverNode.style.pointerEvents = 'none';
-      renderingInfo.hoverNode.style.transition = 'none';
-      renderingInfo.hoverNode.style.opacity = 1;
-
       renderingInfo.textNode.style.fontFamily = 'verdana; sans-serif';
       renderingInfo.textNode.style.padding = '0 4px 2px';
       renderingInfo.textNode.style.color = 'rgba(0; 0; 0; 0.6)';
@@ -92,15 +121,11 @@ export default class {
       renderingInfo.textNode.style.top = '0px';
       renderingInfo.textNode.style.right = '0px';
       renderingInfo.textNode.innerHTML = `${renderingInfo.count} | ${report.renderTime} / ${report.totalTime} ms`;
-      if (document.body.contains(renderingInfo.hoverNode) === false) {
-        document.body.appendChild(renderingInfo.hoverNode);
-      }
-      renderingInfo.animationTimeout = setTimeout(() => {
-        renderingInfo.hoverNode.style.transition = 'opacity 500ms ease-in';
-        renderingInfo.hoverNode.style.opacity = 0;
-      }, 1500);
+
+      showNodeAroundNode(renderingInfo.hoverNode, report.node, outlineColor);
+
       renderingInfo.removalTimeout = setTimeout(() => {
-        document.body.removeChild(renderingInfo.hoverNode);
+        renderingInfo.animationTimeout = destroyNode(renderingInfo.hoverNode, 500);
       }, 2000);
 
       renderingInfo.count++;
@@ -117,12 +142,9 @@ export default class {
 
     const target = e.target;
     const node = this._hook.findComponentByNode(target).node;
+    destroyNode(hoverDeptreeNode);
     if (node) {
-      if (this._hoveredDeptreeNode) {
-        this._hoveredDeptreeNode.style = null;
-      }
-      this._hoveredDeptreeNode = node;
-      node.style.boxShadow = "inset 0 0 0 2px lightblue";
+      showNodeAroundNode(hoverDeptreeNode, node, 'lightBlue');
     }
   };
 
@@ -134,10 +156,7 @@ export default class {
     if (component) {
       e.stopPropagation();
       e.preventDefault();
-      if (this._hoveredDeptreeNode) {
-        this._hoveredDeptreeNode.style = null;
-        this._hoveredDeptreeNode = undefined;
-      }
+      destroyNode(hoverDeptreeNode, 500);
       this._agent.store.togglePickingDeptreeComponent(false);
       this._agent.pickedDeptreeComponnet(component, mobxid);
     }
