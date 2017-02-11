@@ -1,6 +1,11 @@
-import React, { Component, PropTypes } from 'react';
+import { Component, PropTypes } from 'react';
 
 export default class ContextProvider extends Component {
+
+  static propTypes = {
+    store: PropTypes.object.isRequired,
+    children: PropTypes.node.isRequired,
+  };
 
   static childContextTypes = {
     store: PropTypes.object.isRequired,

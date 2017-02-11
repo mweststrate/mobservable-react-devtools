@@ -1,19 +1,19 @@
 import React, { Component, PropTypes } from 'react';
 import ModalContainer from '../ModalContainer';
-import * as styles from './styles.js';
+import * as styles from './styles';
 
 export default class Graph extends Component {
 
   static contextTypes = {
-    store: React.PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired,
   };
 
   componentDidMount() {
-    this._unsubscribe = this.context.store.subscibeUpdates(() => this.setState({}));
+    this.$unsubscribe = this.context.store.subscibeUpdates(() => this.setState({}));
   }
 
   componentWillUnmount() {
-    this._unsubscribe();
+    this.$unsubscribe();
   }
 
   handleUpdate = () => this.setState({});
@@ -21,18 +21,24 @@ export default class Graph extends Component {
   handleClose = () => this.context.store.clearDeptree();
 
   renderTreeItem({ name, dependencies }, isLast, isRoot) {
+    const stickStyle = Object.assign(
+      {},
+      styles.itemVericalStick,
+      isLast && styles.itemVericalStick.short
+    );
+
     return (
       <div style={styles.item} key={name}>
         <span style={Object.assign({}, styles.box, isRoot && styles.box.root)}>{name}</span>
         {dependencies &&
           <div style={styles.tree}>
             {dependencies.map((dependency, i) =>
-              this.renderTreeItem(dependency, /*isLast:*/i == dependencies.length - 1))
+              this.renderTreeItem(dependency, /* isLast:*/i === dependencies.length - 1))
             }
           </div>
         }
         {!isRoot && <span style={styles.itemHorisontalDash} />}
-        {!isRoot && <span style={Object.assign({}, styles.itemVericalStick, isLast && styles.itemVericalStick.short)} />}
+        {!isRoot && <span style={stickStyle} />}
       </div>
     );
   }
@@ -45,11 +51,11 @@ export default class Graph extends Component {
           <div style={styles.graph}>
             <span style={styles.close} onClick={this.handleClose}>×</span>
             <div style={styles.rootThree}>
-              {this.renderTreeItem(dependencyTree, /*isLast:*/true, /*isRoot:*/true)}
+              {this.renderTreeItem(dependencyTree, /* isLast:*/true, /* isRoot:*/true)}
             </div>
           </div>
         }
       </ModalContainer>
     );
   }
-};
+}

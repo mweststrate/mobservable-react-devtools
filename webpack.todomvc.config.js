@@ -40,6 +40,11 @@ module.exports = {
         }
       },
       {
+        test: /\.jsx?$/,
+        loader: 'eslint',
+        exclude: /node_modules/
+      },
+      {
         test: /\.tsx?$/,
         loader: 'ts-loader'
       },
@@ -52,6 +57,12 @@ module.exports = {
         loader: 'style!css'
       }
     ],
+  },
+  eslint: {
+    failOnWarning: false,
+    failOnError: process.env.NODE_ENV !== 'development',
+    fix: process.env.NODE_ENV === 'development',
+    cache: false,
   },
   plugins: [
     new webpack.DefinePlugin({

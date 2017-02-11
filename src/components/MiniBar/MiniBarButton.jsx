@@ -1,13 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import * as styles from './styles';
 
-export default class MiniPanelButton extends Component {
+export default class MiniBarButton extends Component {
 
-  static props = {
-    onToggle: PropTypes.bool.isRequired,
+  static propTypes = {
+    onToggle: PropTypes.func.isRequired,
     active: PropTypes.bool.isRequired,
     id: PropTypes.oneOf(['buttonUpdates', 'buttonGraph', 'buttonConsoleLog', 'buttonLog']).isRequired,
     style: PropTypes.object,
+  };
+
+  static defaultProps = {
+    style: undefined,
   };
 
   state = {
@@ -28,6 +32,7 @@ export default class MiniPanelButton extends Component {
         case 'buttonLog': return active ? styles.buttonLogActive : styles.buttonLog;
         case 'buttonConsoleLog': return active ? styles.buttonConsoleLogActive : styles.buttonConsoleLog;
         case 'buttonClear': return styles.buttonClear;
+        default: return undefined;
       }
     })();
 
@@ -38,6 +43,7 @@ export default class MiniPanelButton extends Component {
         case 'buttonLog': return 'Log state changes in panel';
         case 'buttonConsoleLog': return 'Log state changes to the browser console';
         case 'buttonClear': return 'Clear log';
+        default: return undefined;
       }
     })();
 
@@ -53,6 +59,8 @@ export default class MiniPanelButton extends Component {
     return (
       <button
         type="button"
+        data-id={id}
+        data-active={active}
         onClick={onToggle}
         title={title}
         style={finalSyles}
@@ -61,4 +69,4 @@ export default class MiniPanelButton extends Component {
       />
     );
   }
-};
+}

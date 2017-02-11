@@ -2,9 +2,22 @@ import React, { Component, PropTypes } from 'react';
 import MiniBarButton from './MiniBarButton';
 import * as styles from './styles';
 
-export default class MiniPanel extends Component {
+export default class MiniBar extends Component {
 
   static propTypes = {
+    position: PropTypes.shape({
+      top: PropTypes.string,
+      bottom: PropTypes.string,
+      left: PropTypes.string,
+      right: PropTypes.string,
+    }),
+  };
+
+  static defaultProps = {
+    position: {
+      top: '0px',
+      right: '20px',
+    },
   };
 
   static contextTypes = {
@@ -12,50 +25,45 @@ export default class MiniPanel extends Component {
   };
 
   componentDidMount() {
-    this._unsubscribe = this.context.store.subscibeUpdates(() => this.setState({}));
+    this.$unsubscribe = this.context.store.subscibeUpdates(() => this.setState({}));
   }
 
   componentWillUnmount() {
-    this._unsubscribe();
+    this.$unsubscribe();
   }
 
-  handleUpdate = () => this.setState({});
+  handleToggleUpdates = () => this.context.store.toggleShowingUpdates();
+  handleToggleGraph = () => this.context.store.togglePickingDeptreeComponent();
+  handleToggleConsoleLogging = () => this.context.store.toggleConsoleLogging();
 
   render() {
     const { position } = this.props;
     const { store } = this.context;
 
     const additionalMiniPanelStyles = {};
-    if (position) {
-      additionalMiniPanelStyles.top = position.top;
-      additionalMiniPanelStyles.right = position.right;
-      additionalMiniPanelStyles.bottom = position.bottom;
-      additionalMiniPanelStyles.left = position.left;
-    } else {
-      additionalMiniPanelStyles.top = '0px';
-      additionalMiniPanelStyles.right = '20px';
-    }
+    additionalMiniPanelStyles.top = position.top;
+    additionalMiniPanelStyles.right = position.right;
+    additionalMiniPanelStyles.bottom = position.bottom;
+    additionalMiniPanelStyles.left = position.left;
 
     return (
-      <div>
-        <div style={Object.assign({}, styles.panel, additionalMiniPanelStyles)}>
-          <MiniBarButton
-            id="buttonUpdates"
-            onToggle={() => store.toggleShowingUpdates()}
-            active={store.state.updatesEnabled}
-          />
-          <MiniBarButton
-            id="buttonGraph"
-            onToggle={() => store.togglePickingDeptreeComponent()}
-            active={store.state.graphEnabled}
-          />
-          <MiniBarButton
-            id="buttonConsoleLog"
-            active={store.state.consoleLogEnabled}
-            onToggle={() => store.toggleConsoleLogging()}
-          />
-        </div>
+      <div style={Object.assign({}, styles.panel, additionalMiniPanelStyles)}>
+        <MiniBarButton
+          id="buttonUpdates"
+          onToggle={this.handleToggleUpdates}
+          active={store.state.updatesEnabled}
+        />
+        <MiniBarButton
+          id="buttonGraph"
+          onToggle={this.handleToggleGraph}
+          active={store.state.graphEnabled}
+        />
+        <MiniBarButton
+          id="buttonConsoleLog"
+          active={store.state.consoleLogEnabled}
+          onToggle={this.handleToggleConsoleLogging}
+        />
       </div>
     );
   }
-};
+}

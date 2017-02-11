@@ -51,19 +51,19 @@ export default class Store {
 
   handleAction(event) {
     if (event.action === 'set-key') {
-      if (this.lastUpdates[event.key] >= event.timestamp !== true) {
+      if (!(this.lastUpdates[event.key] >= event.timestamp)) {
         this.$setStateKey(event.key, event.value, event.timestamp);
       }
     } else if (event.action === 'append-log') {
-      if (this.lastUpdates.log >= event.timestamp !== true) {
+      if (!(this.lastUpdates.log >= event.timestamp)) {
         this.appendLog(event.data, event.timestamp);
       }
     } else if (event.action === 'sync') {
-      Object.keys(event.state).forEach(key => {
-        if (event.lastUpdates[key] > 0 && this.lastUpdates[key] >= event.lastUpdates[key] !== true) {
+      Object.keys(event.state).forEach((key) => {
+        if (event.lastUpdates[key] && (this.lastUpdates[key] || 0) < event.lastUpdates[key]) {
           this.$setStateKey(key, event.state[key], event.lastUpdates[key]);
         }
-      })
+      });
     }
   }
 
@@ -88,22 +88,22 @@ export default class Store {
     this.updatedListeners.forEach(fn => fn());
   };
 
-  subscribeActions = fn => {
+  subscribeActions = (fn) => {
     this.actionsListeners.push(fn);
     return () => {
       if (this.actionsListeners.indexOf(fn) !== -1) {
         this.actionsListeners.splice(this.actionsListeners.indexOf(fn), 1);
       }
-    }
+    };
   };
 
-  subscibeUpdates = fn => {
+  subscibeUpdates = (fn) => {
     this.updatedListeners.push(fn);
     return () => {
       if (this.updatedListeners.indexOf(fn) !== -1) {
         this.updatedListeners.splice(this.updatedListeners.indexOf(fn), 1);
       }
-    }
+    };
   };
 
   toggleShowingUpdates(on = !this.state.updatesEnabled) {
@@ -130,7 +130,8 @@ export default class Store {
     this.state.log = log.concat(data);
     this.lastUpdates.log = timestamp;
     this.actionsListeners.forEach(fn => fn({ action: 'append-log', data, timestamp }));
-    this.sendUpdated();
+    // Timeout to prevent React warning about setState during update
+    setTimeout(() => this.sendUpdated(), 0);
   }
 
   clearLog() {
@@ -145,17 +146,13 @@ export default class Store {
     this.$setStateKey('dependencyTree', undefined);
   }
 
+  setLogFilter(logFilter) {
+    this.$setStateKey('logFilter', logFilter);
+  }
+
   disposeBridge = () => {
     this.disposables.forEach(fn => fn());
     this.disposables.splice(0);
   };
 }
-
-
-
-
-
-
-
-
 

@@ -1,3 +1,11 @@
+/* eslint-disable global-require */
+
+if (module.webpackPolyfill === undefined && require.extensions) {
+  // Node + babel-core/register environment
+  // causes warning during parsing, no way to get rid of
+  require.extensions['.svg'] = module => `SKIPPED_SVG<${module.filename}>`;
+}
+
 export const panel = {
   position: 'fixed',
   height: '26px',
@@ -29,7 +37,7 @@ export const button = {
     ':hover': {
       opacity: 1,
     },
-  }
+  },
 };
 
 export const buttonLog = {

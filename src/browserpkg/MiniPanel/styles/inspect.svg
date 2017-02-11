@@ -1,6 +1,0 @@
-<svg baseProfile="basic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="16" width="16">
-    <g stroke="#000" fill="none" stroke-width="2">
-        <circle cx="7" cy="7" r="5"/>
-        <path d="M15 15l-4.5-4.5"/>
-    </g>
-</svg>

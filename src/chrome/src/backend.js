@@ -1,26 +1,12 @@
-import Agent from '../../backend/Agent';
+import Agent from '../../backend/Agent_';
 import Bridge from '../../backend/Bridge';
 
-window.addEventListener('message', welcome);
-
-function welcome(evt) {
-  if (evt.data.source !== 'mobx-devtools-content-script') {
-    return;
-  }
-
-  const contentScriptId = evt.data.contentScriptId;
-
-  window.removeEventListener('message', welcome);
-
-  setup(window.__MOBX_DEVTOOLS_GLOBAL_HOOK__, contentScriptId);
-}
-
 function setup(hook, contentScriptId) {
-  var listeners = [];
+  let listeners = [];
 
-  var wall = {
+  const wall = {
     listen(fn) {
-      var listener = evt => {
+      const listener = (evt) => {
         if (evt.data.source !== 'mobx-devtools-content-script' || !evt.data.payload || evt.data.contentScriptId !== contentScriptId) {
           return;
         }
@@ -46,9 +32,24 @@ function setup(hook, contentScriptId) {
   hook.agent.connect(bridge);
 
   hook.agent.onceShutdown(() => {
-    listeners.forEach(fn => {
+    listeners.forEach((fn) => {
       window.removeEventListener('message', fn);
     });
     listeners = [];
   });
 }
+
+function welcome(evt) {
+  if (evt.data.source !== 'mobx-devtools-content-script') {
+    return;
+  }
+
+  const contentScriptId = evt.data.contentScriptId;
+
+  window.removeEventListener('message', welcome);
+
+  // eslint-disable-next-line no-underscore-dangle
+  setup(window.__MOBX_DEVTOOLS_GLOBAL_HOOK__, contentScriptId);
+}
+
+window.addEventListener('message', welcome);

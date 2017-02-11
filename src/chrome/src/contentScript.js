@@ -3,18 +3,9 @@
 const contentScriptId = Math.random().toString(32).slice(2);
 
 // proxy from main page to devtools (via the background page)
-var port = chrome.runtime.connect({
+const port = chrome.runtime.connect({
   name: 'content-script',
 });
-
-port.onMessage.addListener(handleMessageFromDevtools);
-port.onDisconnect.addListener(handleDisconnect);
-window.addEventListener('message', handleMessageFromPage);
-
-window.postMessage({
-  source: 'mobx-devtools-content-script',
-  contentScriptId,
-}, '*');
 
 function handleMessageFromDevtools(message) {
   window.postMessage({
@@ -42,3 +33,12 @@ function handleDisconnect() {
     contentScriptId,
   }, '*');
 }
+
+port.onMessage.addListener(handleMessageFromDevtools);
+port.onDisconnect.addListener(handleDisconnect);
+window.addEventListener('message', handleMessageFromPage);
+
+window.postMessage({
+  source: 'mobx-devtools-content-script',
+  contentScriptId,
+}, '*');

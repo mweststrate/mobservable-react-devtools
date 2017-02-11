@@ -3,26 +3,24 @@ import React, { Component, PropTypes } from 'react';
 export default class UpdatesControl extends Component {
 
   static propTypes = {
-    highlightTimeout: PropTypes.number,
-  };
-
-  static defaultProps = {
-    highlightTimeout: 1500,
+    children: PropTypes.node.isRequired,
   };
 
   componentDidMount() {
-    const { store } = __MOBX_DEVTOOLS_GLOBAL_HOOK__;
-    this._unsubscribe = store.subscibeUpdates(() => this.setState({}));
+    // eslint-disable-next-line no-underscore-dangle
+    const { store } = window.__MOBX_DEVTOOLS_GLOBAL_HOOK__.agent;
+    this.$unsubscribe = store.subscibeUpdates(() => this.setState({}));
   }
 
   componentWillUnmount() {
-    this._unsubscribe();
+    this.$unsubscribe();
   }
 
   handleUpdate = () => this.setState({});
 
   render() {
-    const { store } = __MOBX_DEVTOOLS_GLOBAL_HOOK__;
+    // eslint-disable-next-line no-underscore-dangle
+    const { store } = window.__MOBX_DEVTOOLS_GLOBAL_HOOK__.agent;
     const { children } = this.props;
     return React.cloneElement(children, {
       onToggle: () => store.toggleShowingUpdates(),

@@ -1,21 +1,24 @@
-var React = require('react');
+import React, { PropTypes, Component } from 'react';
 import Bridge from './backend/Bridge';
 import Store from './Store';
 import Blocked from './components/Blocked';
 import ContextProvider from './ContextProvider';
 
-export default class Loader extends React.Component {
+export default class Loader extends Component {
 
   static propTypes = {
-    quiet: React.PropTypes.bool,
-    debugName: React.PropTypes.string,
-    reload: React.PropTypes.func.isRequired,
-    reloadSubscribe: React.PropTypes.func.isRequired,
-    inject: React.PropTypes.func.isRequired,
+    quiet: PropTypes.bool,
+    debugName: PropTypes.string,
+    reload: PropTypes.func.isRequired,
+    reloadSubscribe: PropTypes.func.isRequired,
+    inject: PropTypes.func.isRequired,
+    children: PropTypes.node.isRequired,
   };
 
-  _unMounted = false;
-  _disposables = [];
+  static defaultProps = {
+    quiet: false,
+    debugName: '',
+  };
 
   state = {
     loading: true,
@@ -24,54 +27,57 @@ export default class Loader extends React.Component {
 
   componentWillMount() {
     if (this.props.reloadSubscribe) {
-      this._unsubscribeReload = this.props.reloadSubscribe(() => this.reload())
+      this.$unsubscribeReload = this.props.reloadSubscribe(() => this.reload());
     }
     this.props.inject((wall, teardownWall) => {
-      this._teardownWall = teardownWall;
+      this.$teardownWall = teardownWall;
       const bridge = new Bridge(wall);
       const store = new Store(`${this.props.debugName} store`);
 
-      this._disposeConnection = Store.connectToBridge(store, bridge);
+      this.$disposeConnection = Store.connectToBridge(store, bridge);
 
       bridge.send('request-agent-status');
       bridge.send('request-store-sync');
 
-      this._disposables.push(
+      this.$disposables.push(
         bridge.sub('agent-status', (agentStatus) => {
           this.setState({ mobxFound: agentStatus.mobxFound });
         })
       );
 
-      if (!this._unMounted) {
+      if (!this.$unMounted) {
         this.setState({ loading: false, store });
       }
     });
   }
 
   componentWillUnmount() {
-    this._unMounted = true;
+    this.$unMounted = true;
     this.teardown();
   }
+
+  $unMounted = false;
+  $disposables = [];
 
   reload() {
     this.teardown();
   }
 
   teardown() {
-    if (!this._unMounted) {
+    if (!this.$unMounted) {
       this.setState({ loading: true, store: undefined }, this.props.reload);
     }
-    if (this._disposeConnection) {
-      this._disposeConnection();
-      this._disposeConnection = undefined;
+    if (this.$disposeConnection) {
+      this.$disposeConnection();
+      this.$disposeConnection = undefined;
     }
-    if (this._unsubscribeReload) {
-      this._unsubscribeReload();
-      this._unsubscribeReload = undefined;
+    if (this.$unsubscribeReload) {
+      this.$unsubscribeReload();
+      this.$unsubscribeReload = undefined;
     }
-    if (this._teardownWall) {
-      this._teardownWall();
-      this._teardownWall = undefined;
+    if (this.$teardownWall) {
+      this.$teardownWall();
+      this.$teardownWall = undefined;
     }
   }
 

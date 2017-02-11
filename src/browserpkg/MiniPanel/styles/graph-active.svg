@@ -1,9 +1,0 @@
-<svg baseProfile="basic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="16" width="16">
-    <g stroke="#1780fa" fill="none" stroke-width="1.25">
-        <path d="M2.5 2.5h9v2h-9z"/>
-        <path d="M7.5 7.5h7v2h-7z"/>
-        <path d="M7.5 12.5h7v2h-7z"/>
-        <path d="M4.5 4.5v9h3"/>
-        <path d="M7.5 8.5h-3"/>
-    </g>
-</svg>

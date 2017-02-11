@@ -1,22 +1,28 @@
 import React, { Component, PropTypes } from 'react';
 
 export default class GraphControl extends Component {
-  
+
+  static propTypes = {
+    children: PropTypes.node.isRequired,
+  };
+
   componentWillMount() {
     this.setState({});
   }
 
   componentDidMount() {
-    const { store } = __MOBX_DEVTOOLS_GLOBAL_HOOK__;
-    this._unsubscribe = store.subscibeUpdates(() => this.setState({}));
+    // eslint-disable-next-line no-underscore-dangle
+    const { store } = window.__MOBX_DEVTOOLS_GLOBAL_HOOK__.agent;
+    this.$unsubscribe = store.subscibeUpdates(() => this.setState({}));
   }
 
   componentWillUnmount() {
-    this._unsubscribe()
+    this.$unsubscribe();
   }
 
   render() {
-    const { store } = __MOBX_DEVTOOLS_GLOBAL_HOOK__;
+    // eslint-disable-next-line no-underscore-dangle
+    const { store } = window.__MOBX_DEVTOOLS_GLOBAL_HOOK__.agent;
     const { children } = this.props;
     return React.cloneElement(children, {
       onToggle: () => store.togglePickingDeptreeComponent(),
@@ -24,5 +30,4 @@ export default class GraphControl extends Component {
     });
   }
 }
-
 

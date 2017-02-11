@@ -3,16 +3,16 @@ var webpack = require('webpack');
 module.exports = {
   devtool: false,
   entry: {
-    backend: './src/backend.js',
-    background: './src/background.js',
-    injectGlobalHook: './src/injectGlobalHook.js',
-    contentScript: './src/contentScript.js',
-    panel: './src/panel.js',
-    'panel-loader': './src/panel-loader.js',
-    window: './src/window.js',
+    backend: './src/chrome/src/backend.js',
+    background: './src/chrome/src/background.js',
+    injectGlobalHook: './src/chrome/src/injectGlobalHook.js',
+    contentScript: './src/chrome/src/contentScript.js',
+    panel: './src/chrome/src/panel',
+    'panel-loader': './src/chrome/src/panel-loader.js',
+    window: './src/chrome/src/window',
   },
   output: {
-    path: __dirname + '/build',
+    path: __dirname + '/src/chrome/build',
     filename: '[name].js',
   },
   module: {
@@ -26,6 +26,11 @@ module.exports = {
           presets: ["es2015", "stage-1"],
           plugins: ['transform-decorators-legacy', 'transform-class-properties']
         }
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: 'eslint'
       },
       {
         test: /\.tsx?$/,
@@ -44,9 +49,15 @@ module.exports = {
   resolve: {
     extensions: ['', '.js', '.jsx', '.ts'],
     alias: {
-      'mobx-react': __dirname + '/../../mobx-react/src',
-      'mobx': __dirname + '/../../mobx/src/mobx.ts',
+      'mobx-react': __dirname + '/mobx-react/src',
+      'mobx': __dirname + '/mobx/src/mobx.ts',
     },
+  },
+  eslint: {
+    failOnWarning: false,
+    failOnError: process.env.NODE_ENV !== 'development',
+    fix: process.env.NODE_ENV === 'development',
+    cache: false,
   },
   plugins: [
     new webpack.DefinePlugin({

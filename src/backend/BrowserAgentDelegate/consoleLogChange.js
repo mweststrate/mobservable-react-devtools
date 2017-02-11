@@ -1,8 +1,4 @@
-// TODO: use stacktrace.js or similar and strip off unrelevant stuff?
-const trace = (window.chrome && console.trace) ? () => console.trace() : () => {};
-const dir = window.chrome ? (...args) => console.trace(...args) : () => {};
-
-const color = (str, color) => `%c${str}`;
+/* eslint-disable no-console */
 
 let advicedToUseChrome = false;
 
@@ -11,49 +7,48 @@ const formatChange = (change) => {
     case 'action':
       // name, target, arguments, fn
       return [
-        `%caction '%s' (%s)`,
+        '%caction \'%s\' (%s)',
         'color:dodgerblue',
         change.name,
-        change.targetName
+        change.targetName,
       ];
     case 'transaction':
       // name, target
       return [
-        `%ctransaction '%s' (%s)`,
+        '%ctransaction \'%s\' (%s)',
         'color:gray',
         change.name,
-        change.targetName
+        change.targetName,
       ];
     case 'scheduled-reaction':
       // object
       return [
-        `%cscheduled async reaction '%s'`,
+        '%cscheduled async reaction \'%s\'',
         'color:#10a210',
-        change.objectName
+        change.objectName,
       ];
     case 'reaction':
       // object, fn
       return [
-        `%creaction '%s'`,
+        '%creaction \'%s\'',
         'color:#10a210',
-        change.objectName
+        change.objectName,
       ];
     case 'compute':
       // object, target, fn
       return [
-        `%ccomputed '%s' (%s)`,
+        '%ccomputed \'%s\' (%s)',
         'color:#10a210',
         change.objectName,
-        change.targetName
+        change.targetName,
       ];
     case 'error':
       // message
       return [
         '%cerror: %s',
         'color:tomato',
-        change.message
+        change.message,
       ];
-      break;
     case 'update':
       // (array) object, index, newValue, oldValue
       // (map, obbject) object, name, newValue, oldValue
@@ -64,7 +59,7 @@ const formatChange = (change) => {
           change.objectName,
           change.index,
           change.newValue,
-          change.oldValue
+          change.oldValue,
         ];
       }
       if (change.name) {
@@ -73,14 +68,14 @@ const formatChange = (change) => {
           change.objectName,
           change.name,
           change.newValue,
-          change.oldValue
+          change.oldValue,
         ];
       }
       return [
         "updated '%s': %s (was: %s)",
         change.objectName,
         change.newValue,
-        change.oldValue
+        change.oldValue,
       ];
     case 'splice':
       // (array) object, index, added, removed, addedCount, removedCount
@@ -89,7 +84,7 @@ const formatChange = (change) => {
         change.objectName,
         change.index,
         change.addedCount,
-        change.removedCount
+        change.removedCount,
       ];
     case 'add':
       // (map, object) object, name, newValue
@@ -97,7 +92,7 @@ const formatChange = (change) => {
         "set '%s.%s': %s",
         change.objectName,
         change.name,
-        change.newValue
+        change.newValue,
       ];
     case 'delete':
       // (map) object, name, oldValue
@@ -105,14 +100,14 @@ const formatChange = (change) => {
         "removed '%s.%s' (was %s)",
         change.objectName,
         change.name,
-        change.oldValue
+        change.oldValue,
       ];
     case 'create':
       // (value) object, newValue
       return [
         "set '%s': %s",
         change.objectName,
-        change.newValue
+        change.newValue,
       ];
     default:
       // generic fallback for future events
@@ -125,16 +120,16 @@ const getAdditionalMessages = (change) => {
     case 'action':
       return [
         { type: 'misc-log', data: change.arguments, children: [] },
-        { type: 'misc-trace', children: [] }
+        { type: 'misc-trace', children: [] },
       ];
     case 'reaction':
       return [
-        { type: 'misc-trace', children: [] }
+        { type: 'misc-trace', children: [] },
       ];
     case 'error':
       // message
       return [
-        { type: 'misc-trace', children: [] }
+        { type: 'misc-trace', children: [] },
       ];
     case 'update':
       return [
@@ -143,17 +138,17 @@ const getAdditionalMessages = (change) => {
           data: { newValue: change.newValue, oldValue: change.oldValue },
           children: [],
         },
-        { type: 'misc-trace', children: [] }
+        { type: 'misc-trace', children: [] },
       ];
     case 'splice':
       return [
         { type: 'misc-dir', data: { added: change.added, removed: change.removed }, children: [] },
-        { type: 'misc-trace', children: [] }
+        { type: 'misc-trace', children: [] },
       ];
     case 'add':
       return [
         { type: 'misc-dir', data: { newValue: change.newValue }, children: [] },
-        { type: 'misc-trace', children: [] }
+        { type: 'misc-trace', children: [] },
       ];
     case 'delete':
       return [
@@ -170,10 +165,44 @@ const getAdditionalMessages = (change) => {
   }
 };
 
-export default function consoleLogChange(change) {
 
-  if (advicedToUseChrome === false && typeof navigator !== 'undefined' && navigator.userAgent.indexOf('Chrome') === -1) {
-    console.warn("The output of the MobX logger is optimized for Chrome");
+const consoleX = (() => {
+  const $consoleX = {
+    log: () => {},
+    groupCollapsed: () => {},
+    groupEnd: () => {},
+    warn: () => {},
+    trace: () => {},
+  };
+  if (typeof console === 'undefined') return $consoleX;
+
+  if (console.log) {
+    $consoleX.log = (...args) => console.log(...args);
+  }
+  if (console.groupCollapsed) {
+    $consoleX.groupCollapsed = (...args) => console.groupCollapsed(...args);
+  }
+  if (console.groupEnd) {
+    $consoleX.groupEnd = (...args) => console.groupEnd(...args);
+  }
+  if (console.groupEnd) {
+    $consoleX.groupEnd = (...args) => console.groupEnd(...args);
+  }
+  if (console.warn) {
+    $consoleX.warn = (...args) => console.warn(...args);
+  }
+  // TODO: use stacktrace.js or similar and strip off unrelevant stuff?
+  if (console.trace) {
+    $consoleX.trace = (...args) => console.trace(...args);
+  }
+  return $consoleX;
+})();
+
+consoleX.dir = (...args) => console.dir(...args);
+
+export default function consoleLogChange(change) {
+  if (advicedToUseChrome === false && typeof window.navigator !== 'undefined' && window.navigator.userAgent.indexOf('Chrome') === -1) {
+    consoleX.warn('The output of the MobX logger is optimized for Chrome');
     advicedToUseChrome = true;
   }
 
@@ -181,27 +210,27 @@ export default function consoleLogChange(change) {
   const group = change.children.length + additionalMessages.length > 0;
 
   if (group) {
-    console.groupCollapsed(...formatChange(change));
+    consoleX.groupCollapsed(...formatChange(change));
 
-    for (let i = 0; i < change.children.length; i++) {
+    for (let i = 0; i < change.children.length; i += 1) {
       consoleLogChange(change.children[i]);
     }
 
-    for (let i = 0; i < additionalMessages.length; i++) {
+    for (let i = 0; i < additionalMessages.length; i += 1) {
       const msg = additionalMessages[i];
       if (msg.type === 'misc-log') {
-        console.log(msg.data);
+        consoleX.log(msg.data);
       } else if (msg.type === 'misc-dir') {
-        console.dir(msg.data);
+        consoleX.dir(msg.data);
       } else if (msg.type === 'misc-trace') {
-        trace();
+        consoleX.trace();
       }
     }
 
-    console.groupEnd();
+    consoleX.groupEnd();
   } else if (change.type === 'error') {
-    console.error(...formatChange(change));
+    consoleX.error(...formatChange(change));
   } else {
-    console.log(...formatChange(change));
+    consoleX.log(...formatChange(change));
   }
 }

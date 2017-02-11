@@ -1,3 +1,5 @@
+/* eslint-disable max-len */
+
 import React, { Component, PropTypes } from 'react';
 
 export default class LogItem extends Component {
@@ -10,17 +12,17 @@ export default class LogItem extends Component {
     open: false,
   };
 
-  handleClick = () => {
-    this.setState({ open: !this.state.open }, () => {
-      if (this.refs.container && this.refs.container.scrollIntoViewIfNeeded) {
-        this.refs.container.scrollIntoViewIfNeeded();
-      }
-    });
-  };
-
   shouldComponentUpdate(nextProps, nextState) {
     return this.state.open !== nextState.open;
   }
+
+  handleClick = () => {
+    this.setState({ open: !this.state.open }, () => {
+      if (this.containerEl && this.containerEl.scrollIntoViewIfNeeded) {
+        this.containerEl.scrollIntoViewIfNeeded();
+      }
+    });
+  };
 
   renderBody() {
     const { change } = this.props;
@@ -75,7 +77,9 @@ export default class LogItem extends Component {
         if (change.index) {
           return (
             <span className="mobxdevtool__LogItem__title">
-              <b>Updated</b> ‘{change.objectName}[{change.index}]’: {String(change.newValue)} (was {String(change.oldValue)})
+              <b>Updated</b>
+              ‘{change.objectName}[{change.index}]’:
+              {String(change.newValue)} (was {String(change.oldValue)})
             </span>
           );
         }
@@ -132,14 +136,14 @@ export default class LogItem extends Component {
   render() {
     const { change } = this.props;
     return (
-      <div className="mobxdevtool__LogItem" ref="container">
+      <div className="mobxdevtool__LogItem" ref={(el) => { this.containerEl = el; }}>
         <div
-          className={
-            'mobxdevtool__LogItem__body ' +
-            `mobxdevtool__LogItem__body--type-${change.type} ` +
-            (change.children.length ? 'mobxdevtool__LogItem__body--has-children ' : '') +
-            (this.state.open ? 'mobxdevtool__LogItem__body--open ' : 'mobxdevtool__LogItem__body--closed ')
-          }
+          className={[
+            'mobxdevtool__LogItem__body ',
+            `mobxdevtool__LogItem__body--type-${change.type} `,
+            (change.children.length ? 'mobxdevtool__LogItem__body--has-children ' : ''),
+            (this.state.open ? 'mobxdevtool__LogItem__body--open ' : 'mobxdevtool__LogItem__body--closed '),
+          ].join(' ')}
           onClick={this.handleClick}
         >
           {this.renderBody()}
@@ -150,4 +154,4 @@ export default class LogItem extends Component {
       </div>
     );
   }
-};
+}

@@ -1,11 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import * as styles from './styles';
 
-export default class ModalContaner extends Component {
+export default class ModalContainer extends Component {
 
   static propTypes = {
     children: PropTypes.node,
     onOverlayClick: PropTypes.func.isRequired,
+  };
+
+  static defaultProps = {
+    children: undefined,
   };
 
   componentDidUpdate(prevProps) {
@@ -21,7 +25,7 @@ export default class ModalContaner extends Component {
       html.style.overflow = 'hidden';
       const nextTotalWidth = html.offsetWidth;
       const rightOffset = Math.max(0, nextTotalWidth - prevTotalWidth);
-      html.style.borderRight = `${rightOffset}px solid transparent`
+      html.style.borderRight = `${rightOffset}px solid transparent`;
     }
   }
 
@@ -45,4 +49,4 @@ export default class ModalContaner extends Component {
       </div>
     );
   }
-};
+}

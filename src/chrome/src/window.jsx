@@ -1,18 +1,22 @@
 /* global chrome */
 
-var React = require('react');
-var ReactDOM = require('react-dom');
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 import Loader from '../../Loader';
 import RichPanel from '../../components/RichPanel';
 
-var node = document.getElementById('container');
-
-var disconnectListeners = {};
+const node = document.getElementById('container');
 
 chrome.runtime.getBackgroundPage(({ contentTabId }) => {
   let onDisconnect;
-  const loaderConfig = {
+  let loaderConfig;
+
+  function render() {
+    ReactDOM.render(<Loader {...loaderConfig}><RichPanel /></Loader>, node);
+  }
+
+  loaderConfig = {
     debugName: 'Window UI',
     reload: () => {
       ReactDOM.unmountComponentAtNode(node);
@@ -24,12 +28,12 @@ chrome.runtime.getBackgroundPage(({ contentTabId }) => {
         }
       });
     },
-    reloadSubscribe: reloadFn => {
+    reloadSubscribe: (reloadFn) => {
       onDisconnect = reloadFn;
       return () => { onDisconnect = undefined; };
     },
-    inject: done => {
-      var code = `
+    inject: (done) => {
+      const code = `
       // the prototype stuff is in case document.createElement has been modified
       var script = document.constructor.prototype.createElement.call(document, 'script');
       script.src = "${chrome.runtime.getURL('build/backend.js')}";
@@ -40,7 +44,7 @@ chrome.runtime.getBackgroundPage(({ contentTabId }) => {
         let disconnected = false;
 
         const port = chrome.runtime.connect({
-          name: '' + contentTabId,
+          name: `${contentTabId}`,
         });
 
         port.onDisconnect.addListener(() => {
@@ -61,12 +65,8 @@ chrome.runtime.getBackgroundPage(({ contentTabId }) => {
         };
         done(wall, () => port.disconnect());
       });
-    }
+    },
   };
-
-  function render() {
-    ReactDOM.render(<Loader {...loaderConfig}><RichPanel /></Loader>, node);
-  }
 
   render();
 });

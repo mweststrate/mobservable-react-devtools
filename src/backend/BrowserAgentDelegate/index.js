@@ -16,10 +16,10 @@ const showNodeAroundNode = (node, targetNode, outlineColor) => {
   };
 
   node.style.position = 'absolute';
-  node.style.top = offset.top + 'px';
-  node.style.left = offset.left + 'px';
-  node.style.width = offset.width + 'px';
-  node.style.height = offset.height + 'px';
+  node.style.top = `${offset.top}px`;
+  node.style.left = `${offset.left}px`;
+  node.style.width = `${offset.width}px`;
+  node.style.height = `${offset.height}px`;
   node.style.boxSizing = 'border-box';
   node.style.zIndex = '64998';
   node.style.pointerEvents = 'none';
@@ -34,13 +34,13 @@ const showNodeAroundNode = (node, targetNode, outlineColor) => {
 };
 
 const destroyNode = (node, transitionDeleay = 0) => {
-  if (!node || !node.parentNode) return;
+  if (!node || !node.parentNode) return undefined;
   if (transitionDeleay) {
     node.style.transition = `opacity ${transitionDeleay}ms ease-in`;
     node.style.opacity = 0;
     return setTimeout(() => {
       node.parentNode.removeChild(node);
-    }, 1500);
+    }, transitionDeleay);
   }
   node.parentNode.removeChild(node);
   return undefined;
@@ -48,26 +48,28 @@ const destroyNode = (node, transitionDeleay = 0) => {
 
 export default class {
 
-  _hoveredDeptreeNode = undefined;
+  $hoveredDeptreeNode = undefined;
+
+  highlightTimeout = 1500;
 
   constructor(agent, hook) {
-    this._agent = agent;
-    this._hook = hook;
+    this.$agent = agent;
+    this.$hook = hook;
 
-    document.body.addEventListener('mousemove', this._handleMouseMove, true);
-    document.body.addEventListener('click', this._handleClick, true);
+    document.body.addEventListener('mousemove', this.$handleMouseMove, true);
+    document.body.addEventListener('click', this.$handleClick, true);
   }
 
   dispose() {
-    document.body.removeEventListener('mousemove', this._handleMouseMove, true);
-    document.body.removeEventListener('click', this._handleClick, true);
+    document.body.removeEventListener('mousemove', this.$handleMouseMove, true);
+    document.body.removeEventListener('click', this.$handleClick, true);
   }
 
-  consoleLogChange(change, mobx, filter) {
+  consoleLogChange(change, mobx, filter) { // eslint-disable-line class-methods-use-this
     consoleLogChange(change, mobx, filter);
   }
 
-  displayRenderingReport = report => {
+  displayRenderingReport = (report) => {
     if (report.event === 'destroy') {
       if (report.node && renderingInfosRegistry.has(report.node)) {
         const renderingInfo = renderingInfosRegistry.get(report.node);
@@ -126,39 +128,39 @@ export default class {
 
       renderingInfo.removalTimeout = setTimeout(() => {
         renderingInfo.animationTimeout = destroyNode(renderingInfo.hoverNode, 500);
-      }, 2000);
+      }, this.highlightTimeout);
 
-      renderingInfo.count++;
+      renderingInfo.count += 1;
       renderingInfosRegistry.set(report.node, renderingInfo);
     }
   };
 
   clearHoveredDeptreeNode() {
-    this._hoveredDeptreeNode = undefined;
+    this.$hoveredDeptreeNode = undefined;
   }
 
-  _handleMouseMove = e => {
-    if (this._agent.store.state.graphEnabled !== true) return;
+  $handleMouseMove = (e) => {
+    if (this.$agent.store.state.graphEnabled !== true) return;
 
     const target = e.target;
-    const node = this._hook.findComponentByNode(target).node;
+    const node = this.$hook.findComponentByNode(target).node;
     destroyNode(hoverDeptreeNode);
     if (node) {
       showNodeAroundNode(hoverDeptreeNode, node, 'lightBlue');
     }
   };
 
-  _handleClick = e => {
-    if (this._agent.store.state.graphEnabled !== true) return;
+  $handleClick = (e) => {
+    if (this.$agent.store.state.graphEnabled !== true) return;
 
     const target = e.target;
-    const { component, mobxid } = this._hook.findComponentByNode(target);
+    const { component, mobxid } = this.$hook.findComponentByNode(target);
     if (component) {
       e.stopPropagation();
       e.preventDefault();
       destroyNode(hoverDeptreeNode, 500);
-      this._agent.store.togglePickingDeptreeComponent(false);
-      this._agent.pickedDeptreeComponnet(component, mobxid);
+      this.$agent.store.togglePickingDeptreeComponent(false);
+      this.$agent.pickedDeptreeComponnet(component, mobxid);
     }
   };
 }

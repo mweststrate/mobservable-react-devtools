@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 /**
  * NOTE: This file cannot `require` any other modules. We `.toString()` the
  *       function in some places and inject the source into the page.

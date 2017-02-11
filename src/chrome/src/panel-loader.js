@@ -1,6 +1,7 @@
 /* global chrome */
 
-var panelCreated = false;
+let panelCreated = false;
+let loadCheckInterval;
 
 function createPanelIfMobxLoaded() {
   if (panelCreated) {
@@ -8,27 +9,27 @@ function createPanelIfMobxLoaded() {
   }
   chrome.devtools.inspectedWindow.eval(`!!(
     Object.keys(window.__MOBX_DEVTOOLS_GLOBAL_HOOK__.instances).length || window.mobx
-  )`, function(pageHasMobx, err) {
+  )`, (pageHasMobx) => {
     if (!pageHasMobx || panelCreated) {
       return;
     }
 
     clearInterval(loadCheckInterval);
     panelCreated = true;
-    chrome.devtools.panels.create('MobX', '', 'panel.html', function(panel) {
-      panel.onShown.addListener(function(window) {
-      });
-      panel.onHidden.addListener(function() {
-      });
-    });
+    // chrome.devtools.panels.create('MobX', '', 'panel.html', (panel) => {
+    //   panel.onShown.addListener((window) => {
+    //   });
+    //   panel.onHidden.addListener(() => {
+    //   });
+    // });
   });
 }
 
-chrome.devtools.network.onNavigated.addListener(function() {
+chrome.devtools.network.onNavigated.addListener(() => {
   createPanelIfMobxLoaded();
 });
 
-var loadCheckInterval = setInterval(function() {
+loadCheckInterval = setInterval(() => {
   createPanelIfMobxLoaded();
 }, 1000);
 

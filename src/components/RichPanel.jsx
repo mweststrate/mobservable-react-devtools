@@ -1,4 +1,4 @@
-var React = require('react');
+import React from 'react';
 import Log from './Log';
 import Graph from './Graph';
 import MiniBarButton from './MiniBar/MiniBarButton';
@@ -12,14 +12,20 @@ export default class RichPanel extends React.Component {
   };
 
   componentDidMount() {
-    this._unsubscribe = this.context.store.subscibeUpdates(() => this.setState({}));
+    this.$unsubscribe = this.context.store.subscibeUpdates(() => this.setState({}));
   }
 
   componentWillUnmount() {
-    this._unsubscribe();
+    this.$unsubscribe();
   }
 
   handleUpdate = () => this.setState({});
+
+  handleToggleUpdates = () => this.context.store.toggleShowingUpdates();
+  handleToggleGraph = () => this.context.store.togglePickingDeptreeComponent();
+  handleToggleConsoleLogging = () => this.context.store.toggleConsoleLogging();
+  handleToggleLogging = () => this.context.store.toggleLogging();
+  handleClearLog = () => this.context.store.clearLog();
 
   render() {
     const { store } = this.context;
@@ -27,7 +33,7 @@ export default class RichPanel extends React.Component {
     return (
       <div style={{ width: '100%', display: 'flex', flexDirection: 'column' }}>
         {store.state.graphEnabled &&
-          <Blocked icon="pick" onClick={() => store.togglePickingDeptreeComponent()}>
+          <Blocked icon="pick" onClick={this.handleToggleGraph}>
             Pick the component
           </Blocked>
         }
@@ -37,26 +43,26 @@ export default class RichPanel extends React.Component {
           {store.state.mobxReactFound &&
             <MiniBarButton
               id="buttonUpdates"
-              onToggle={() => store.toggleShowingUpdates()}
+              onToggle={this.handleToggleUpdates}
               active={store.state.updatesEnabled}
             />
           }
           {store.state.mobxReactFound &&
             <MiniBarButton
               id="buttonGraph"
-              onToggle={() => store.togglePickingDeptreeComponent()}
+              onToggle={this.handleToggleGraph}
               active={store.state.graphEnabled}
             />
           }
           <MiniBarButton
             id="buttonLog"
             active={store.state.logEnabled}
-            onToggle={() => store.toggleLogging()}
+            onToggle={this.handleToggleLogging}
           />
           <MiniBarButton
             id="buttonConsoleLog"
             active={store.state.consoleLogEnabled}
-            onToggle={() => store.toggleConsoleLogging()}
+            onToggle={this.handleToggleConsoleLogging}
           />
 
           {store.state.log.length > 0 &&
@@ -64,7 +70,7 @@ export default class RichPanel extends React.Component {
               style={{ marginLeft: 'auto' }}
               id="buttonClear"
               active={false}
-              onToggle={() => store.clearLog()}
+              onToggle={this.handleClearLog}
             />
           }
 

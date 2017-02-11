@@ -1,3 +1,31 @@
+function observableName(mobx, object) {
+  return mobx.extras.getDebugName(object);
+}
+
+function isPrimitive(value) {
+  return value === null || value === undefined || typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean';
+}
+
+function getNameForThis(who) {
+  if (who === null || who === undefined) {
+    return '';
+  } else if (who && typeof who === 'object') {
+    if (who && who.$mobx) {
+      return who.$mobx.name;
+    } else if (who.constructor) {
+      return who.constructor.name || 'object';
+    }
+  }
+  return `${typeof who}`;
+}
+
+function formatValue(value) {
+  if (isPrimitive(value)) {
+    if (typeof value === 'string' && value.length > 100) { return `${value.substr(0, 97)}...`; }
+    return value;
+  }
+  return `(${getNameForThis(value)})`;
+}
 
 
 export default class ChangesProcessor {
@@ -24,7 +52,6 @@ export default class ChangesProcessor {
       change.time = undefined;
       if (this.path.length === 0) {
         this.onChange(superChange);
-        return;
       }
     } else {
       if (this.path.length > 0) {
@@ -106,35 +133,4 @@ export default class ChangesProcessor {
       this.path = [];
     }
   }
-}
-
-function observableName(mobx, object) {
-  return mobx.extras.getDebugName(object);
-}
-
-function formatValue(value) {
-  if (isPrimitive(value)) {
-    if (typeof value === "string" && value.length > 100)
-      return value.substr(0, 97) + "...";
-    return value;
-  } else {
-    return `(${getNameForThis(value)})`;
-  }
-}
-
-function getNameForThis(who) {
-  if (who === null || who === undefined) {
-    return "";
-  } else if (who && typeof who === "object") {
-    if (who && who.$mobx) {
-      return who.$mobx.name;
-    } else if (who.constructor) {
-      return who.constructor.name || "object";
-    }
-  }
-  return `${typeof who}`;
-}
-
-function isPrimitive(value) {
-  return value === null || value === undefined || typeof value === "string" || typeof value === "number" || typeof value === "boolean";
 }

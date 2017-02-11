@@ -1,5 +1,5 @@
 import ObjectAssign from 'es6-object-assign';
-ObjectAssign.polyfill();
+import { configureDevtool } from './browserpkg/DevTool';
 
 export { default, configureDevtool } from './browserpkg/DevTool';
 export { default as GraphControl } from './browserpkg/Controls/GraphControl';
@@ -10,4 +10,5 @@ export const setUpdatesEnabled = updatesEnabled => configureDevtool({ updatesEna
 export const setGraphEnabled = graphEnabled => configureDevtool({ graphEnabled });
 export const setLogEnabled = logEnabled => configureDevtool({ logEnabled });
 
+ObjectAssign.polyfill();
 
