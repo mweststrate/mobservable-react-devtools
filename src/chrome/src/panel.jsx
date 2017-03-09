@@ -27,11 +27,20 @@ loaderConfig = {
   },
   inject: (done) => {
     const code = `
-    // the prototype stuff is in case document.createElement has been modified
-    var script = document.constructor.prototype.createElement.call(document, 'script');
-    script.src = "${chrome.runtime.getURL('build/backend.js')}";
-    document.documentElement.appendChild(script);
-    script.parentNode.removeChild(script);
+    (function() {
+      var inject = function() {
+        // the prototype stuff is in case document.createElement has been modified
+        var script = document.constructor.prototype.createElement.call(document, 'script');
+        script.src = "${chrome.runtime.getURL('build/backend.js')}";
+        document.documentElement.appendChild(script);
+        script.parentNode.removeChild(script);
+      }
+      if (!document.documentElement) {
+        document.addEventListener('DOMContentLoaded', inject);
+      } else {
+        inject();
+      }
+    }());
     `;
     chrome.devtools.inspectedWindow.eval(code, (res, err) => {
       if (err) {

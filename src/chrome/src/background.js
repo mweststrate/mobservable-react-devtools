@@ -35,6 +35,7 @@ function isNumeric(str: string): boolean {
 }
 
 function installContentScript(tabId: number) {
+  // chrome.tabs.get(tabId, info => console.log({ ...info }));
   chrome.tabs.executeScript(tabId, { file: '/build/contentScript.js' }, () => {});
 }
 
@@ -44,11 +45,21 @@ function doublePipe(one, two) {
   // console.log(`doublePipe ${one.name} <-> ${two.name} [${one.$i} <-> ${two.$i}]`);
   function lOne(message) {
     // console.log('dv -> rep', message);
-    two.postMessage(message);
+    try {
+      two.postMessage(message);
+    } catch (e) {
+      console.error('Unexpected disconnect, error', e);
+      shutdown();
+    }
   }
   function lTwo(message) {
     // console.log('rep -> dv', message);
-    one.postMessage(message);
+    try {
+      one.postMessage(message);
+    } catch (e) {
+      console.error('Unexpected disconnect, error', e);
+      shutdown();
+    }
   }
   one.onMessage.addListener(lOne);
   two.onMessage.addListener(lTwo);
@@ -108,6 +119,9 @@ chrome.runtime.onConnect.addListener((port) => {
     };
   }
   ports[tab][name] = port;
+  port.onDisconnect.addListener(() => {
+    ports[tab][name] = null;
+  });
 
   if (ports[tab].devtools && ports[tab]['content-script']) {
     doublePipe(ports[tab].devtools, ports[tab]['content-script']);
