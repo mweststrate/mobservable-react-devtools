@@ -1,9 +1,11 @@
 /* eslint-disable global-require */
 
-if (module.webpackPolyfill === undefined && require.extensions) {
-  // Node + babel-core/register environment
-  // causes warning during parsing, no way to get rid of
-  require.extensions['.svg'] = module => `SKIPPED_SVG<${module.filename}>`;
+// For test environment
+// Evaling so that webpack doesn't complain about using require.extensions.
+// eslint-disable-next-line no-eval
+const requireExtensions = eval('typeof require === \'function\' && require.extensions');
+if (module.webpackPolyfill === undefined && requireExtensions) {
+  requireExtensions['.svg'] = module => `SKIPPED_SVG<${module.filename}>`;
 }
 
 export const panel = {

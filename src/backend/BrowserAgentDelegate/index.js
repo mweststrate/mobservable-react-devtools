@@ -34,15 +34,15 @@ const showNodeAroundNode = (node, targetNode, outlineColor) => {
 };
 
 const destroyNode = (node, transitionDeleay = 0) => {
-  if (!node || !node.parentNode) return undefined;
+  if (!node) return undefined;
   if (transitionDeleay) {
     node.style.transition = `opacity ${transitionDeleay}ms ease-in`;
     node.style.opacity = 0;
     return setTimeout(() => {
-      node.parentNode.removeChild(node);
+      if (node.parentNode) node.parentNode.removeChild(node);
     }, transitionDeleay);
   }
-  node.parentNode.removeChild(node);
+  if (node.parentNode) node.parentNode.removeChild(node);
   return undefined;
 };
 

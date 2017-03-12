@@ -48,8 +48,8 @@ function doublePipe(one, two) {
     try {
       two.postMessage(message);
     } catch (e) {
-      console.error('Unexpected disconnect, error', e);
-      shutdown();
+      console.error('Unexpected disconnect, error', e); // eslint-disable-line no-console
+      shutdown(); // eslint-disable-line no-use-before-define
     }
   }
   function lTwo(message) {
@@ -57,8 +57,8 @@ function doublePipe(one, two) {
     try {
       one.postMessage(message);
     } catch (e) {
-      console.error('Unexpected disconnect, error', e);
-      shutdown();
+      console.error('Unexpected disconnect, error', e); // eslint-disable-line no-console
+      shutdown(); // eslint-disable-line no-use-before-define
     }
   }
   one.onMessage.addListener(lOne);
