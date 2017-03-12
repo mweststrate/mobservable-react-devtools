@@ -1,6 +1,6 @@
 {
     "name": "mobx-react-devtools",
-    "version": "4.2.10",
+    "version": "4.2.11",
     "description": "Dev-tools for MobX and React",
     "main": "index.js",
     "typings": "index",
@@ -23,7 +23,7 @@
     },
     "homepage": "https://mobxjs.github.io/mobx",
     "peerDependencies": {
-        "mobx": "^2.2.0",
+        "mobx": "^2.2.0 || ^3.0.0",
         "mobx-react": "^3.3.0 || ^4.0.0"
     },
     "devDependencies": {

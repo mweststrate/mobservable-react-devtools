@@ -8,7 +8,7 @@ DevTools for MobX to track the rendering behavior and data dependencies of your 
 
 `npm install --save-dev mobx-react-devtools`
 
-or 
+or
 
 `<script src="https://unpkg.com/mobx-react-devtools"></script>`
 
@@ -51,7 +51,7 @@ For each component the color indicates roughly how long the coloring took. Rende
 
 ### About log groups
 
-Note that if logging is enabled, MobX actions and reactions will appear as collapsible groups inside the browsers console. 
+Note that if logging is enabled, MobX actions and reactions will appear as collapsible groups inside the browsers console.
 Mind that any log statements that are printed during these (re)actions will appear inside those groups as well, so that you can exactly trace when they are triggered.
 
 ### Configuration
@@ -79,7 +79,7 @@ import { setLogEnabled, setUpdatesEnabled, setGraphEnabled } from 'mobx-react-de
 
 setLogEnabled(true); // same as configureDevtool({ logEnabled: true });
 setUpdatesEnabled(false); // same as configureDevtool({ updatesEnabled: false });
-setGraphEnabled(false); // same as configureDevtool({ logFilter: false });
+setGraphEnabled(false); // same as configureDevtool({ graphEnabled: false });
 ```
 
 ### Custom panel design
@@ -103,10 +103,10 @@ class MyApp extends React.Component {
   render() {
     return (
       <div>
-    
+
         {/* Include somewhere with `noPanel` prop. Is needed to display updates and modals */}
         <DevTool noPanel />
-        
+
         <div className="my-custom-devtools-panel-design">
           <GraphControl>
             {/* Must have only one child that takes props: `active` (bool), `onToggle` (func) */}
@@ -118,7 +118,7 @@ class MyApp extends React.Component {
           </LogControl>
           <UpdatesControl>
             {/* Must have only one child that takes props: `active` (bool), `onToggle` (func) */}
-            <MyNiceButton>Updates</MyNiceButton> 
+            <MyNiceButton>Updates</MyNiceButton>
           </UpdatesControl>
         </div>
       </div>
@@ -135,6 +135,10 @@ class MyApp extends React.Component {
 * ~~Be able to enable state change tracking from the extras module~~
 
 ## Changelog
+
+4.2.11
+
+* Added MobX 3 support
 
 4.2.9
 * Fixed typescript typings (#42)
