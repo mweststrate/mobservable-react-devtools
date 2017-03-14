@@ -114,14 +114,25 @@ chrome.runtime.onConnect.addListener((port) => {
 
   if (!ports[tab]) {
     ports[tab] = {
-      devtools: null,
-      'content-script': null,
+      contentScript: null,
+      pendingDevtools: [],
     };
   }
-  ports[tab][name] = port;
-  port.onDisconnect.addListener(() => {
-    ports[tab][name] = null;
-  });
+  if (name === 'content-script') {
+    ports[tab].contentScript = port;
+    ports[tab].pendingDevtools.forEach(p => doublePipe(p, port));
+    ports[tab].pendingDevtools = [];
+    port.onDisconnect.addListener(() => {
+      ports[tab].contentScript = null;
+    });
+  } else if (name === 'devtools' && ports[tab].contentScript) {
+    doublePipe(ports[tab].contentScript, port);
+  } else if (name === 'devtools') {
+    ports[tab].pendingDevtools.push(port);
+    port.onDisconnect.addListener(() => {
+      ports[tab].pendingDevtools = ports[tab].pendingDevtools.filter(p => p !== port);
+    });
+  }
 
   if (ports[tab].devtools && ports[tab]['content-script']) {
     doublePipe(ports[tab].devtools, ports[tab]['content-script']);

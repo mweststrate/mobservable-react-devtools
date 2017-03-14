@@ -2,8 +2,8 @@
   "manifest_version": 2,
   "name": "MobX Developer Tools",
   "description": "Adds MobX debugging tools to the Chrome Developer Tools.",
-  "version": "0.0.15",
-  "version_name": "alpha-12",
+  "version": "0.0.16",
+  "version_name": "alpha-13",
   "minimum_chrome_version": "43",
   "icons": {
     "128": "icons/Icon-128.png",

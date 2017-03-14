@@ -73,8 +73,8 @@ export default class {
     if (report.event === 'destroy') {
       if (report.node && renderingInfosRegistry.has(report.node)) {
         const renderingInfo = renderingInfosRegistry.get(report.node);
-        if (document.body.contains(renderingInfo.hoverNode)) {
-          document.body.removeChild(renderingInfo.hoverNode);
+        if (renderingInfo.hoverNode.parentNode) {
+          renderingInfo.hoverNode.parentNode.removeChild(renderingInfo.hoverNode);
         }
         renderingInfosRegistry.delete(report.node);
       }

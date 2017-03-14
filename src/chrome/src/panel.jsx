@@ -8,6 +8,7 @@ import RichPanel from '../../components/RichPanel';
 
 const node = document.getElementById('container');
 
+let onDisconnect;
 let loaderConfig;
 
 function render() {
@@ -22,8 +23,10 @@ loaderConfig = {
     render();
   },
   reloadSubscribe: (reloadFn) => {
-    chrome.devtools.network.onNavigated.addListener(reloadFn);
-    return () => chrome.devtools.network.onNavigated.removeListener(reloadFn);
+    // chrome.devtools.network.onNavigated.addListener(reloadFn);
+    // return () => chrome.devtools.network.onNavigated.removeListener(reloadFn);
+    onDisconnect = reloadFn;
+    return () => { onDisconnect = undefined; };
   },
   inject: (done) => {
     const code = `
@@ -56,6 +59,7 @@ loaderConfig = {
 
       port.onDisconnect.addListener(() => {
         disconnected = true;
+        if (onDisconnect) { onDisconnect(); }
       });
 
       const wall = {
