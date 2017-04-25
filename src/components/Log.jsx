@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import LogItem from './LogItem';
 
 const renderStyle = () => (
@@ -77,7 +78,7 @@ const renderStyle = () => (
 export default class Log extends Component {
 
   static contextTypes = {
-    store: React.PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired,
   };
 
   componentDidMount() {

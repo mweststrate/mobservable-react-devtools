@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Log from './Log';
 import Graph from './Graph';
 import MiniBarButton from './MiniBar/MiniBarButton';
@@ -8,7 +9,7 @@ import Blocked from './Blocked';
 export default class RichPanel extends React.Component {
 
   static contextTypes = {
-    store: React.PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired,
   };
 
   componentDidMount() {
