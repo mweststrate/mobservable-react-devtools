@@ -97,14 +97,6 @@ export default class Log extends Component {
 
   scrollEnd = true;
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   return this.state.log !== nextState.log;
-  // }
-
-  handleUpdate = () => {
-    this.setState({});
-  };
-
   handleScroll = () => {
     if (this.containerEl) {
       const { scrollTop, offsetHeight, scrollHeight } = this.containerEl;

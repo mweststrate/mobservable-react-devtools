@@ -14,13 +14,37 @@ export default class RichPanel extends React.Component {
 
   componentDidMount() {
     this.$unsubscribe = this.context.store.subscibeUpdates(() => this.setState({}));
+    document.addEventListener('keydown', this.$handleKeyDown);
   }
 
   componentWillUnmount() {
     this.$unsubscribe();
+    document.removeEventListener('keydown', this.$handleKeyDown);
   }
 
-  handleUpdate = () => this.setState({});
+  $handleKeyDown = (e) => {
+    if (!e.metaKey) return;
+    switch (e.keyCode) {
+      case 75: // k
+        e.preventDefault();
+        this.handleClearLog();
+        break;
+      case 76: // l
+        e.preventDefault();
+        this.handleToggleLogging();
+        break;
+      case 80: // p
+        e.preventDefault();
+        this.handleToggleGraph();
+        break;
+      case 85: // u
+        e.preventDefault();
+        this.handleToggleUpdates();
+        break;
+      default:
+        break;
+    }
+  };
 
   handleToggleUpdates = () => this.context.store.toggleShowingUpdates();
   handleToggleGraph = () => this.context.store.togglePickingDeptreeComponent();
@@ -46,6 +70,7 @@ export default class RichPanel extends React.Component {
               id="buttonUpdates"
               onToggle={this.handleToggleUpdates}
               active={store.state.updatesEnabled}
+              hotkey="u"
             />
           }
           {store.state.mobxReactFound &&
@@ -53,12 +78,14 @@ export default class RichPanel extends React.Component {
               id="buttonGraph"
               onToggle={this.handleToggleGraph}
               active={store.state.graphEnabled}
+              hotkey="p"
             />
           }
           <MiniBarButton
             id="buttonLog"
             active={store.state.logEnabled}
             onToggle={this.handleToggleLogging}
+            hotkey="l"
           />
           <MiniBarButton
             id="buttonConsoleLog"
@@ -72,6 +99,7 @@ export default class RichPanel extends React.Component {
               id="buttonClear"
               active={false}
               onToggle={this.handleClearLog}
+              hotkey="k"
             />
           }
 

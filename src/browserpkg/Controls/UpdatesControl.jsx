@@ -17,8 +17,6 @@ export default class UpdatesControl extends Component {
     this.$unsubscribe();
   }
 
-  handleUpdate = () => this.setState({});
-
   render() {
     // eslint-disable-next-line no-underscore-dangle
     const { store } = window.__MOBX_DEVTOOLS_GLOBAL_HOOK__.agent;

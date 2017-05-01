@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import * as styles from './styles';
 
+const metaPrefix = '⌘';
+
 export default class MiniBarButton extends Component {
 
   static propTypes = {
@@ -9,10 +11,12 @@ export default class MiniBarButton extends Component {
     active: PropTypes.bool.isRequired,
     id: PropTypes.oneOf(['buttonUpdates', 'buttonGraph', 'buttonConsoleLog', 'buttonLog']).isRequired,
     style: PropTypes.object,
+    hotkey: PropTypes.string,
   };
 
   static defaultProps = {
     style: undefined,
+    hotkey: undefined,
   };
 
   state = {
@@ -23,7 +27,7 @@ export default class MiniBarButton extends Component {
   handleMouseOut = () => this.setState({ hovered: false });
 
   render() {
-    const { active, id, onToggle, style } = this.props;
+    const { active, id, onToggle, style, hotkey } = this.props;
     const { hovered } = this.state;
 
     const additionalStyles = (() => {
@@ -36,6 +40,8 @@ export default class MiniBarButton extends Component {
         default: return undefined;
       }
     })();
+
+    const hotkeyFormatted = hotkey ? ` (${metaPrefix}${hotkey})` : '';
 
     const title = (() => {
       switch (id) {
@@ -63,7 +69,7 @@ export default class MiniBarButton extends Component {
         data-id={id}
         data-active={active}
         onClick={onToggle}
-        title={title}
+        title={title + hotkeyFormatted}
         style={finalSyles}
         onMouseOver={this.handleMouseOver}
         onMouseOut={this.handleMouseOut}

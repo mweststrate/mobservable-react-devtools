@@ -17,8 +17,6 @@ export default class Graph extends Component {
     this.$unsubscribe();
   }
 
-  handleUpdate = () => this.setState({});
-
   handleClose = () => this.context.store.clearDeptree();
 
   renderTreeItem({ name, dependencies }, isLast, isRoot) {
