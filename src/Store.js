@@ -80,11 +80,16 @@ export default class Store {
       this.state[key] = value;
       this.lastUpdates[key] = timestamp;
       this.actionsListeners.forEach(fn => fn({ action: 'set-key', key, value, timestamp }));
-      this.sendUpdated();
+      this.scheduleUpdate();
     }
   }
 
-  sendUpdated = () => {
+  scheduleUpdate() {
+    clearTimeout(this.updt);
+    this.updt = setTimeout(this.$sendUpdated, 15);
+  }
+
+  $sendUpdated = () => {
     this.updatedListeners.forEach(fn => fn());
   };
 
@@ -131,7 +136,7 @@ export default class Store {
     this.lastUpdates.log = timestamp;
     this.actionsListeners.forEach(fn => fn({ action: 'append-log', data, timestamp }));
     // Timeout to prevent React warning about setState during update
-    setTimeout(() => this.sendUpdated(), 0);
+    this.scheduleUpdate();
   }
 
   clearLog() {
