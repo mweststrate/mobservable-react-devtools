@@ -1,0 +1,8 @@
+<svg baseProfile="basic" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" height="16" width="16">
+    <g stroke="#1780fa" fill="none" stroke-width="1.25">
+        <path d="M12.5,3.5h-8c-1.1,0-2,0.9-2,2v5c0,1.1,0.9,2,2,2h1v2l5-2h2c1.1,0,2-0.9,2-2v-5C14.5,4.4,13.6,3.5,12.5,3.5z"/>
+        <path d="M10,6.5h2"/>
+        <path d="M10,9.5h2"/>
+        <polyline points="5,6 8,8 5,10 "/>
+    </g>
+</svg>

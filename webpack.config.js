@@ -13,17 +13,26 @@ module.exports = {
     extensions: ['', '.js', '.jsx']
   },
   module: {
-    loaders: [{
-      test: /\.jsx?$/,
-      exclude: /node_modules/,
-      loader: 'babel'
-    }, {
-      test: /\.css$/,
-      loader: 'style!css/locals?module'
-    }, {
-      test: /\.svg$/,
-      loader: 'url-loader'
-    }]
+    loaders: [
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: 'babel'
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: /node_modules/,
+        loader: 'eslint'
+      },
+      {
+        test: /\.css$/,
+        loader: 'style!css/locals?module'
+      },
+      {
+        test: /\.svg$/,
+        loader: 'url-loader'
+      },
+    ]
   },
   externals: {
     'mobx-react': {
@@ -39,6 +48,12 @@ module.exports = {
         amd: 'react'
     },
     mobx: 'mobx'
+  },
+  eslint: {
+    failOnWarning: false,
+    failOnError: process.env.NODE_ENV !== 'development',
+    fix: process.env.NODE_ENV === 'development',
+    cache: false,
   },
   plugins: [
     new webpack.optimize.UglifyJsPlugin({

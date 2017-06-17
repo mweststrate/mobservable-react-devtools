@@ -1,3 +1,7 @@
+.idea
 /src
 /node_modules/
 webpack.config.js
+mobx
+mobx-react
+mobx-react-todomvc
