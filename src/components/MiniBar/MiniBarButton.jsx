@@ -9,7 +9,7 @@ export default class MiniBarButton extends Component {
   static propTypes = {
     onToggle: PropTypes.func.isRequired,
     active: PropTypes.bool.isRequired,
-    id: PropTypes.oneOf(['buttonUpdates', 'buttonGraph', 'buttonConsoleLog', 'buttonLog']).isRequired,
+    id: PropTypes.oneOf(['buttonUpdates', 'buttonGraph', 'buttonConsoleLog', 'buttonLog', 'buttonClear']).isRequired,
     style: PropTypes.object,
     hotkey: PropTypes.string,
   };

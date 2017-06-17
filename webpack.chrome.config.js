@@ -19,7 +19,7 @@ module.exports = {
     loaders: [
       {
         test: /\.jsx?$/,
-        loader:  'babel',
+        loader:  'babel-loader',
         exclude: /node_modules/,
         query: {
           cacheDirectory: true,
@@ -30,7 +30,13 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'eslint'
+        loader: 'eslint-loader',
+        query: {
+          failOnWarning: false,
+          failOnError: process.env.NODE_ENV !== 'development',
+          fix: process.env.NODE_ENV === 'development',
+          cache: false,
+        }
       },
       {
         test: /\.tsx?$/,
@@ -42,22 +48,16 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style!css'
+        loader: 'style-loader!style-loader'
       }
     ],
   },
   resolve: {
-    extensions: ['', '.js', '.jsx', '.ts'],
+    extensions: ['.js', '.jsx', '.ts'],
     alias: {
       'mobx-react': __dirname + '/mobx-react/src',
       'mobx': __dirname + '/mobx/src/mobx.ts',
     },
-  },
-  eslint: {
-    failOnWarning: false,
-    failOnError: process.env.NODE_ENV !== 'development',
-    fix: process.env.NODE_ENV === 'development',
-    cache: false,
   },
   plugins: [
     new webpack.DefinePlugin({

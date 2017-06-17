@@ -12,7 +12,7 @@ module.exports = {
     publicPath: '/static/'
   },
   resolve: {
-    extensions: ['', '.js', '.jsx', '.ts', '.tsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
     alias: {
       'mobx-react-devtools': __dirname + '/src',
       'mobx-react': __dirname + '/mobx-react/src',
@@ -31,18 +31,13 @@ module.exports = {
     loaders: [
       {
         test: /\.jsx?$/,
-        loader:  'babel',
+        loader:  'babel-loader',
         exclude: /node_modules/,
         query: {
           cacheDirectory: true,
           presets: ["es2015", "stage-1"],
           plugins: ['transform-decorators-legacy', 'transform-class-properties']
         }
-      },
-      {
-        test: /\.jsx?$/,
-        loader: 'eslint',
-        exclude: /node_modules/
       },
       {
         test: /\.tsx?$/,
@@ -54,15 +49,9 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: 'style!css'
+        loader: 'style-loader!css-loader'
       }
     ],
-  },
-  eslint: {
-    failOnWarning: false,
-    failOnError: process.env.NODE_ENV !== 'development',
-    fix: process.env.NODE_ENV === 'development',
-    cache: false,
   },
   plugins: [
     new webpack.DefinePlugin({

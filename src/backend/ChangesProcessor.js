@@ -40,7 +40,14 @@ export default class ChangesProcessor {
 
   path = [];
 
-  push(change, mobx) {
+  push(_change, mobx) {
+    const change = {};
+    for (const p in _change) {
+      if (Object.prototype.hasOwnProperty.call(_change, p)) {
+        change[p] = _change[p];
+      }
+    }
+
     const isGroupStart = change.spyReportStart === true;
     const isGroupEnd = change.spyReportEnd === true;
 
