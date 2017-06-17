@@ -136,6 +136,14 @@ class MyApp extends React.Component {
 
 ## Changelog
 
+4.2.13
+
+* Fixed warning about calling PropTypes validators directly (#62)
+
+4.2.12
+
+* Added react 15.5/16 support
+
 4.2.11
 
 * Added MobX 3 support
