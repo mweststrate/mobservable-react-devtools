@@ -12,7 +12,7 @@ export default function installGlobalHook(window) {
   }
 
   function validateMobxInstance(mobx) {
-    return Boolean(mobx && mobx.extras);
+    return Boolean(mobx && mobx.extras && mobx.spy);
   }
 
   function validateMobxReactInstance(mobxReact) {
@@ -21,7 +21,7 @@ export default function installGlobalHook(window) {
 
   function compareMobxInstances(a, b) {
     if (!a || !b) return a === b;
-    return a.autorun === b.autorun;
+    return a.extras === b.extras;
   }
 
   function compareMobxReactInstances(a, b) {
@@ -36,7 +36,6 @@ export default function installGlobalHook(window) {
         if (!validateMobxInstance(mobx)) return;
         var self = this;
         setTimeout(function() {
-          mobx = mobx.default || mobx;
           var mobxid;
           for (var id in self.instances) {
             if (compareMobxInstances(self.instances[id] && self.instances[id].mobx, mobx)) {
@@ -56,8 +55,6 @@ export default function installGlobalHook(window) {
         if (!validateMobxInstance(mobx)) return;
         var self = this;
         setTimeout(function() {
-          mobxReact = mobxReact.default || mobxReact;
-          mobx = mobx.default || mobx;
           mobxReact.trackComponents();
           var mobxid;
           for (var id in self.instances) {
