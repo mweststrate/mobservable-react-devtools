@@ -1,3 +1,7 @@
 /node_modules
 /index.js
 /npm-debug.log
+/.idea
+/*.iml
+/*.ipr
+/*.iws
