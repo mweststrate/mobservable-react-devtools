@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import ModalContainer from '../ModalContainer';
 import { getGlobalState, setGlobalState, eventEmitter } from '../globalStore';
 import * as styles from './styles.js';

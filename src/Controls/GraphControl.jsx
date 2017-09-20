@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { trackComponents } from 'mobx-react';
 import { getGlobalState, setGlobalState, eventEmitter, _handleMouseMove, _handleClick } from '../globalStore';
 

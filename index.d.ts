@@ -10,7 +10,8 @@ export interface IDevToolProps {
         right?:  number | string;
         bottom?: number | string;
         left?:   number | string;
-    }
+    };
+    noPanel?: boolean;
 }
 
 export default class DevTools extends React.Component<IDevToolProps, {}> { }

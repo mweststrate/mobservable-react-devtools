@@ -44,7 +44,7 @@ From there on, after each rendering a reactive components logs the following thr
 2. The time spend in the `render()` method of a component
 3. The time spend from the start of the `render()` method until the changes are flushed to the DOM
 
-For each component the color indicates roughly how long the coloring took. Rendering times are cummalitive; they include time spend in the children
+For each component the color indicates roughly how long the coloring took. Rendering times are cumulative; they include time spend in the children
 * Green: less then 25 ms
 * Orange: less then 100 ms
 * Red: rendering for this component took more than 100ms
@@ -57,13 +57,13 @@ Mind that any log statements that are printed during these (re)actions will appe
 ### Configuration
 
 ```js
-import DevTool, { configureDevtool } from 'mobx-react-devtools';
+import { configureDevtool } from 'mobx-react-devtools';
 
 // Any configurations are optional
 configureDevtool({
   // Turn on logging changes button programmatically:
   logEnabled: true,
-  // Turn off displaying conponents' updates button programmatically:
+  // Turn off displaying components updates button programmatically:
   updatesEnabled: false,
   // Log only changes of type `reaction`
   // (only affects top-level messages in console, not inside groups)
@@ -85,7 +85,7 @@ setGraphEnabled(false); // same as configureDevtool({ graphEnabled: false });
 ### Custom panel design
 
 ```js
-import DevTool, { GraphControl, LogControl, UpdatesControl } from 'mobx-react-devtools';
+import DevTools, { GraphControl, LogControl, UpdatesControl } from 'mobx-react-devtools';
 
 class MyNiceButton extends React.Component {
   render() {
@@ -105,7 +105,7 @@ class MyApp extends React.Component {
       <div>
 
         {/* Include somewhere with `noPanel` prop. Is needed to display updates and modals */}
-        <DevTool noPanel />
+        <DevTools noPanel />
 
         <div className="my-custom-devtools-panel-design">
           <GraphControl>
@@ -163,7 +163,7 @@ class MyApp extends React.Component {
 * Fixed typescript typings (#36)
 
 4.2.7
-* Fixed passing highlightTimeout from DevTool (#41)
+* Fixed passing highlightTimeout from DevTools (#41)
 
 4.2.6
 * Fixed “max event listeners” warning when rendering in node.js ()

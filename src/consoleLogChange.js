@@ -1,15 +1,15 @@
 import { isObservableArray, isObservableObject, extras } from 'mobx';
 
-let advicedToUseChrome = false;
+let advisedToUseChrome = false;
 
 let currentDepth = 0;
 let isInsideSkippedGroup = false;
 
 export default function consoleLogChange(change, filter) {
 
-    if (advicedToUseChrome === false && typeof navigator !== 'undefined' && navigator.userAgent.indexOf('Chrome') === -1) {
+    if (advisedToUseChrome === false && typeof navigator !== 'undefined' && navigator.userAgent.indexOf('Chrome') === -1) {
         console.warn("The output of the MobX logger is optimized for Chrome");
-        advicedToUseChrome = true;
+        advisedToUseChrome = true;
     }
 
     const isGroupStart = change.spyReportStart === true;

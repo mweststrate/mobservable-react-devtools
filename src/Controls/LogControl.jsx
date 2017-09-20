@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { getGlobalState, setGlobalState, eventEmitter, restoreLogFromLocalstorage } from '../globalStore';
 
 export default class LogControl extends Component {

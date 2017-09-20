@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import React, {Component} from 'react';
 import * as styles from './styles';
 
-export default class ModalContaner extends Component {
+export default class ModalContainer extends Component {
 
   static propTypes = {
     children: PropTypes.node,
@@ -12,8 +12,7 @@ export default class ModalContaner extends Component {
   componentDidUpdate(prevProps) {
     const html = document.body.parentNode;
     if (prevProps.children && !this.props.children) {
-      // Disapeared
-      this.rightOffset = 0;
+      // Disappeared
       html.style.borderRight = null;
       html.style.overflow = null;
     } else if (!prevProps.children && this.props.children) {
@@ -26,7 +25,7 @@ export default class ModalContaner extends Component {
     }
   }
 
-  stopPropogation = e => e.stopPropagation();
+  stopPropagation = e => e.stopPropagation();
 
   render() {
     const { children, onOverlayClick } = this.props;
@@ -39,7 +38,7 @@ export default class ModalContaner extends Component {
         <div
           key="content"
           style={styles.modal}
-          onClick={this.stopPropogation}
+          onClick={this.stopPropagation}
         >
           {children}
         </div>
