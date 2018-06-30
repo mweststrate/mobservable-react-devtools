@@ -1,5 +1,7 @@
 import { isObservableArray, isObservableObject, getDebugName } from "mobx"
 
+const mobxAdminProperty = $mobx || "$mobx"
+
 let advisedToUseChrome = false
 
 let currentDepth = 0
@@ -251,8 +253,8 @@ function getNameForThis(who) {
     if (who === null || who === undefined) {
         return ""
     } else if (who && typeof who === "object") {
-        if (who && who.$mobx) {
-            return who.$mobx.name
+        if (who && who[mobxAdminProperty]) {
+            return who[mobxAdminProperty].name
         } else if (who.constructor) {
             return who.constructor.name || "object"
         }

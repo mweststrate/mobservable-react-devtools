@@ -1,8 +1,10 @@
-import { spy, getDependencyTree } from "mobx"
+import { spy, getDependencyTree, $mobx } from "mobx"
 import { componentByNodeRegistery } from "mobx-react"
 import EventEmmiter from "events"
 import deduplicateDependencies from "./deduplicateDependencies"
 import consoleLogChange from "./consoleLogChange"
+
+const mobxAdminProperty = $mobx || "$mobx"
 
 const LS_UPDATES_KEY = "mobx-react-devtool__updatesEnabled"
 const LS_LOG_KEY = "mobx-react-devtool__logEnabled"
@@ -110,7 +112,7 @@ export const _handleClick = e => {
         if (component) {
             e.stopPropagation()
             e.preventDefault()
-            const dependencyTree = getDependencyTree(component.render.$mobx)
+            const dependencyTree = getDependencyTree(component.render[mobxAdminProperty])
             deduplicateDependencies(dependencyTree)
             setGlobalState({
                 dependencyTree,
